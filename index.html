@@ -360,6 +360,14 @@ document.addEventListener('DOMContentLoaded', function(){
         <button class="quick-open-full" onclick="imprimirTrabalho('pascoa')">🐰 <b>Páscoa</b><small>Imprimir trabalho</small></button>
         <button class="quick-open-full" onclick="imprimirTrabalho('dia_das_maes')">💐 <b>Dia das Mães</b><small>Imprimir trabalho</small></button>
         <button class="quick-open-full" onclick="imprimirTrabalho('dia_dos_pais')">👔 <b>Dia dos Pais</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('carnaval')">🎭 <b>Carnaval</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('festa_junina')">🎪 <b>Festa Junina</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('boi_bumba')">🐂 <b>Boi Bumbá</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('meio_ambiente')">🌳 <b>Meio Ambiente</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('independencia')">🇧🇷 <b>Independência</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('dia_das_criancas')">🎈 <b>Dia das Crianças</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('consciencia_negra')">✊🏾 <b>Consciência Negra</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('natal')">🎄 <b>Natal</b><small>Imprimir trabalho</small></button>
       </div>
     </div>
     <div class="card">
@@ -559,6 +567,11 @@ document.addEventListener('DOMContentLoaded', function(){
     <h3>Novo aluno</h3>
     <div class="field"><label>Nome do aluno</label><input type="text" id="fa-nome" placeholder="Ex.: João Pedro"></div>
     <div class="field"><label>Data de nascimento (opcional)</label><input type="date" id="fa-nascimento"></div>
+    <div class="field">
+      <label>Foto (opcional, ajuda na chamada)</label>
+      <input type="file" accept="image/*" id="fa-foto" onchange="preverFotoAluno(event)">
+      <div id="fa-foto-preview" style="margin-top:8px"></div>
+    </div>
     <div class="modal-actions">
       <button class="cancel" onclick="fecharModal('modal-aluno')">Cancelar</button>
       <button class="confirm" onclick="salvarAluno()">Adicionar</button>
@@ -673,7 +686,7 @@ window.addEventListener('error', function(e){
 
 /* ================= dados fixos ================= */
 const ETAPAS = {
-  'Educação Infantil': ['Berçário','Maternal I','Maternal II','Pré I','Pré II'],
+  'Educação Infantil': ['Berçário I','Berçário II','Maternal I','Maternal II','Pré I','Pré II'],
   'Fundamental I': ['1º ano','2º ano','3º ano','4º ano','5º ano'],
   'Fundamental II': ['6º ano','7º ano','8º ano','9º ano'],
   'Ensino Médio': ['1ª série','2ª série','3ª série']
@@ -1255,17 +1268,41 @@ function renderAniversariantes(){
     : `Hoje é aniversário de ${nomes.slice(0,-1).join(', ')} e ${nomes[nomes.length-1]}! 🎉`;
 }
 
+let fotoAlunoTemp = null;
 function abrirModalAluno(){
   document.getElementById('fa-nome').value='';
   document.getElementById('fa-nascimento').value='';
+  document.getElementById('fa-foto-preview').innerHTML='';
+  fotoAlunoTemp = null;
   document.getElementById('modal-aluno').classList.add('open');
+}
+function preverFotoAluno(event){
+  const arquivo = event.target.files[0];
+  if(!arquivo) return;
+  const leitor = new FileReader();
+  leitor.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const tam = 200;
+      const canvas = document.createElement('canvas');
+      canvas.width = tam; canvas.height = tam;
+      const ctx = canvas.getContext('2d');
+      const escala = Math.max(tam/img.width, tam/img.height);
+      const w = img.width*escala, h = img.height*escala;
+      ctx.drawImage(img, (tam-w)/2, (tam-h)/2, w, h);
+      fotoAlunoTemp = canvas.toDataURL('image/jpeg', 0.85);
+      document.getElementById('fa-foto-preview').innerHTML = `<img src="${fotoAlunoTemp}" style="width:64px;height:64px;border-radius:50%;object-fit:cover">`;
+    };
+    img.src = e.target.result;
+  };
+  leitor.readAsDataURL(arquivo);
 }
 function salvarAluno(){
   const nome = document.getElementById('fa-nome').value.trim();
   if(!nome){ alert('Digite o nome do aluno.'); return; }
   const nascimento = document.getElementById('fa-nascimento').value || null;
   const t = turmaAtual(); if(!t) return;
-  t.alunos.push({ id:'a'+Date.now(), nome, nascimento });
+  t.alunos.push({ id:'a'+Date.now(), nome, nascimento, foto: fotoAlunoTemp });
   persistir('turmas', turmas);
   fecharModal('modal-aluno'); renderAlunos(); renderChamada(); renderPortfolio(); renderListaNotas(); renderBoletim();
   renderAniversariantes();
@@ -1283,15 +1320,24 @@ function fmtDataCurta(iso){
   const [a,m,d] = iso.split('-');
   return `${d}/${m}`;
 }
+function avatarAluno(a, tamanho){
+  if(a.foto){
+    return `<img src="${a.foto}" style="width:${tamanho}px;height:${tamanho}px;border-radius:50%;object-fit:cover;flex:none">`;
+  }
+  return `<div style="width:${tamanho}px;height:${tamanho}px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:${Math.round(tamanho*0.5)}px;flex:none">🧒</div>`;
+}
 function renderAlunos(){
   const t = turmaAtual(); const el = document.getElementById('alunos-list');
   if(!t){ el.innerHTML=''; return; }
   if(t.alunos.length===0){ el.innerHTML = '<div class="empty">Nenhum aluno cadastrado nesta turma.</div>'; return; }
   el.innerHTML = t.alunos.map(a=>`
     <div class="aluno-row">
-      <div>
-        <div class="nome">${escapeHtml(a.nome)}${ehAniversarioHoje(a)?' 🎂':''}</div>
-        ${a.nascimento?`<div class="sub">Nascimento: ${fmtDataCurta(a.nascimento)}</div>`:''}
+      <div style="display:flex;align-items:center;gap:10px">
+        ${avatarAluno(a,40)}
+        <div>
+          <div class="nome">${escapeHtml(a.nome)}${ehAniversarioHoje(a)?' 🎂':''}</div>
+          ${a.nascimento?`<div class="sub">Nascimento: ${fmtDataCurta(a.nascimento)}</div>`:''}
+        </div>
       </div>
       <div class="btns">
         <button onclick="abrirModalPortfolio('${a.id}')">🗂️ Nota</button>
@@ -1310,12 +1356,16 @@ function renderChamada(){
   const chave = t.id+'_'+data;
   const registro = chamadas[chave] || {};
   const registroCor = acompanhamento[chave] || {};
+  const fotoGrande = config.etapa === 'Educação Infantil' ? 56 : 36;
   el.innerHTML = t.alunos.map(a=>{
     const cor = registroCor[a.id];
     return `
     <div class="aluno-row" style="flex-direction:column;align-items:stretch;gap:8px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="nome">${escapeHtml(a.nome)}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          ${avatarAluno(a, fotoGrande)}
+          <div class="nome" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(a.nome)}</div>
+        </div>
         <div class="pill-toggle">
           <button class="${registro[a.id]==='presente'?'on-presente':''}" onclick="marcarChamada('${a.id}','presente')">Presente</button>
           <button class="${registro[a.id]==='falta'?'on-falta':''}" onclick="marcarChamada('${a.id}','falta')">Falta</button>
@@ -1407,6 +1457,7 @@ const atividades = [
   ['at10','🖨️','Imprimir materiais','Folhas para atividades', null, null, null, ['todas'], 'imprimirMateriaisBase'],
   ['at11','🎉','Datas especiais','Atividades temáticas', null, null, 'datas', ['todas']],
   ['at12','🧮','Fórmulas rápidas','Matemática — 1ª a 3ª série', null, null, 'formulas_medio', ['medio']],
+  ['at14','🎭','Folclore Brasileiro','Lendas e personagens', null, null, 'folclore', ['infantil','fund1','fund2']],
 ];
 const rapidas = [
   ['rp1','🎨','Colorir','Ideias e dicas', null, null, 'colorir', ['infantil','fund1']],
@@ -1439,6 +1490,18 @@ function itemVisivelNaEtapa(item){
 
 /* conteúdo pronto, sem precisar sair do app */
 const CONTEUDOS = {
+  folclore: { titulo:'🎭 Folclore Brasileiro', tipo:'dupla', dados:[
+    { t:'Boi Bumbá (Festival de Parintins)', d:'Tradição amazônica com as cores Garantido (vermelho) e Caprichoso (azul), músicas, danças e a lenda da morte e ressureição do boi.' },
+    { t:'Curupira', d:'Protetor da floresta, menino com cabelos de fogo e os pés virados para trás, que confunde quem quer destruir a mata.' },
+    { t:'Saci-Pererê', d:'Menino de uma perna só, cachimbo e gorro vermelho, conhecido por suas travessuras e por sumir em rodamoinhos de vento.' },
+    { t:'Iara', d:'A "mãe-d\'água", sereia dos rios brasileiros que encanta com seu canto quem passa perto da água.' },
+    { t:'Boitatá', d:'Cobra de fogo que protege as florestas e os animais, castigando quem provoca queimadas.' },
+    { t:'Cuca', d:'Bruxa com corpo de jacaré, conhecida das cantigas de ninar, que aparece para as crianças que não querem dormir.' },
+    { t:'Mula sem Cabeça', d:'Mulher amaldiçoada que se transforma em mula soltando fogo pelo pescoço em certas noites.' },
+    { t:'Lobisomem', d:'Homem que se transforma em lobo nas noites de lua cheia, uma das lendas mais conhecidas do Brasil.' },
+    { t:'Negrinho do Pastoreio', d:'Lenda gaúcha de um menino que, mesmo maltratado, ajuda quem perde animais no campo.' },
+    { t:'Boto Cor-de-Rosa', d:'Golfinho da Amazônia que, segundo a lenda, vira um rapaz bonito para dançar nas festas à beira do rio.' },
+  ]},
   formulas_medio: { titulo:'🧮 Fórmulas rápidas — Matemática', tipo:'dupla', dados:[] },
   colorir: { titulo:'🎨 Colorir — ideias e dicas', tipo:'simples', dados:[
     'Desenhos simples de animais para colorir com giz de cera ou lápis de cor',
@@ -1545,6 +1608,7 @@ const CONTEUDOS = {
     { m:'Maio', t:'Dia das Mães', i:'Confecção de cartão ou lembrancinha para a mãe' },
     { m:'Junho', t:'Dia Mundial do Meio Ambiente (05/06)', i:'Atividade sobre reciclagem e cuidado com a natureza' },
     { m:'Junho', t:'Festa Junina / São João (24/06)', i:'Decoração, comidas típicas e danças' },
+    { m:'Junho', t:'Boi Bumbá (Festival de Parintins)', i:'Atividade sobre a tradição do boi-bumbá, as cores Garantido e Caprichoso, e a cultura amazônica' },
     { m:'Julho', t:'Dia do Amigo (20/07)', i:'Dinâmica sobre amizade e respeito entre colegas' },
     { m:'Agosto', t:'Dia dos Pais', i:'Confecção de cartão ou lembrancinha para o pai' },
     { m:'Agosto', t:'Dia do Estudante (11/08)', i:'Roda de conversa sobre o valor de estudar' },
@@ -1848,6 +1912,46 @@ const TRABALHOS_PRONTOS = {
     titulo: '👔 Dia dos Pais',
     infantil: { instrucao: 'Desenhe seu papai. Depois complete: "Eu amo meu pai porque..."', temDesenho:true, temLinhas:2 },
     fundamental: { instrucao: 'Escreva um bilhete carinhoso para seu pai (ou quem cuida de você), contando por que ele é especial.', temLinhas:8 }
+  },
+  carnaval: {
+    titulo: '🎭 Carnaval',
+    infantil: { instrucao: 'Desenhe uma máscara de carnaval bem colorida.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre a origem do Carnaval e suas principais características.', temLinhas:8 }
+  },
+  festa_junina: {
+    titulo: '🎪 Festa Junina',
+    infantil: { instrucao: 'Desenhe uma bandeirinha colorida para decorar a festa junina.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre as comidas, danças e tradições da Festa Junina que você mais gosta.', temLinhas:8 }
+  },
+  boi_bumba: {
+    titulo: '🐂 Boi Bumbá',
+    infantil: { instrucao: 'Desenhe um boi colorido, escolhendo ser do time Garantido (vermelho) ou Caprichoso (azul).', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre a tradição do Boi Bumbá e o Festival de Parintins.', temLinhas:8 }
+  },
+  meio_ambiente: {
+    titulo: '🌳 Meio Ambiente',
+    infantil: { instrucao: 'Desenhe uma árvore com os animais que vivem nela.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva o que você pode fazer no dia a dia para cuidar do meio ambiente.', temLinhas:8 }
+  },
+  independencia: {
+    titulo: '🇧🇷 Independência do Brasil',
+    infantil: { instrucao: 'Pinte a bandeira do Brasil usando as cores certas: verde, amarelo, azul e branco.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva o que a Independência do Brasil significa e por que é comemorada em 7 de setembro.', temLinhas:8 }
+  },
+  dia_das_criancas: {
+    titulo: '🎈 Dia das Crianças',
+    infantil: { instrucao: 'Desenhe o brinquedo ou a brincadeira que você mais gosta.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre como você gostaria de comemorar o Dia das Crianças.', temLinhas:8 }
+  },
+  consciencia_negra: {
+    titulo: '✊🏾 Consciência Negra',
+    infantil: { instrucao: 'Desenhe algo que representa a cultura afro-brasileira (música, dança, comida, roupa).', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre a importância do Dia da Consciência Negra e o que você aprendeu sobre a cultura afro-brasileira.', temLinhas:8 }
+  },
+  natal: {
+    titulo: '🎄 Natal',
+    infantil: { instrucao: 'Desenhe uma árvore de Natal bem decorada.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre as tradições de Natal da sua família.', temLinhas:8 }
   }
 };
 function imprimirTrabalho(chave){
