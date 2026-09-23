@@ -451,6 +451,12 @@ document.addEventListener('DOMContentLoaded', function(){
     </div>
 
     <div class="card">
+      <h2 class="section-title">🔄 Atualizar aplicativo</h2>
+      <p style="font-size:12px;color:var(--muted);margin-top:-6px">Use depois que uma nova versão do app for publicada, pra garantir que o celular carregue a mais recente (sem depender de cache antigo).</p>
+      <button type="button" onclick="atualizarAplicativo()" style="width:100%;border:0;border-radius:12px;padding:13px;background:var(--accent-soft);color:var(--accent);font-weight:bold">🔄 Atualizar aplicativo</button>
+    </div>
+
+    <div class="card">
       <h2 class="section-title">💾 Salvar e organizar</h2>
       <div class="data-actions">
         <button class="data-action save" onclick="salvarTudo()">💾 Salvar</button>
@@ -2525,6 +2531,10 @@ function renderComunicados(){
 }
 
 /* ================= salvar / exportar / importar ================= */
+function atualizarAplicativo(){
+  const url = window.location.pathname + '?atualizado=' + Date.now();
+  window.location.href = url;
+}
 function salvarTudo(){ try{ localStorage.setItem('ultimoSalvamento', new Date().toISOString()); }catch(e){} alert('✅ Dados salvos neste aparelho.'); }
 function excluirDados(){ if(confirm('Deseja excluir todos os dados salvos neste aparelho?')){ try{ localStorage.clear(); }catch(e){} location.reload(); } }
 async function compartilhar(){
