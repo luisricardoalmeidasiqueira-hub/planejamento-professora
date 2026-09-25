@@ -1,0 +1,2587 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Planejamento — Área da professora</title>
+
+<style>
+:root{
+  --bg:#f4f7fb; --card:#ffffff; --text:#172033; --muted:#64748b;
+  --header:#24364f; --header-text:#ffffff; --accent:#315de8; --accent-soft:#eef2ff;
+  --green:#dcfce7; --green-text:#166534;
+  --yellow:#fef3c7; --yellow-text:#92400e;
+  --red:#fee2e2; --red-text:#991b1b;
+  --border:#e2e8f0; --input-bg:#ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#93a0b8;
+    --header:#0e1622; --header-text:#f2f5fb; --accent:#6d8cff; --accent-soft:#1e2740;
+    --green:#123a24; --green-text:#7ee2a8;
+    --yellow:#3a2f10; --yellow-text:#f0c664;
+    --red:#3a1414; --red-text:#f19b9b;
+    --border:#2a3245; --input-bg:#232b3d;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#12161f; --card:#1b2130; --text:#e8ecf5; --muted:#93a0b8;
+  --header:#0e1622; --header-text:#f2f5fb; --accent:#6d8cff; --accent-soft:#1e2740;
+  --green:#123a24; --green-text:#7ee2a8;
+  --yellow:#3a2f10; --yellow-text:#f0c664;
+  --red:#3a1414; --red-text:#f19b9b;
+  --border:#2a3245; --input-bg:#232b3d;
+}
+
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);padding-bottom:78px}
+header{background:var(--header);color:var(--header-text);padding:18px 18px 16px;position:sticky;top:0;z-index:10}
+header .row{display:flex;align-items:center;justify-content:space-between}
+header h1{margin:0;font-size:21px}
+header p{margin:2px 0 0;color:#d7deea;font-size:13px}
+.icon-btn{background:rgba(255,255,255,.12);border:0;color:var(--header-text);border-radius:12px;width:40px;height:40px;font-size:18px}
+
+main{max-width:640px;margin:auto;padding:14px}
+.view{display:none}
+.view.active{display:block}
+
+.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid var(--border)}
+.welcome{display:flex;align-items:center;gap:14px}
+.welcome .photo{width:84px;height:84px;flex:none;border-radius:50%;border:3px solid var(--accent-soft)}
+.welcome .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block;border-radius:50%}
+.welcome h2{font-size:19px;margin:0 0 6px}
+.welcome strong{color:var(--accent)}
+.welcome .text{flex:1;min-width:0}
+.quote{background:var(--accent-soft);padding:10px 12px;border-radius:12px;font-size:14px;color:var(--text);margin-top:10px}
+
+.etapa-chip{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:var(--accent-soft);border-radius:12px;padding:10px 12px;margin-top:10px;
+  font-size:13px;color:var(--accent);font-weight:bold;border:0;width:100%;text-align:left;
+}
+.etapa-chip span.arrow{font-weight:normal;color:var(--muted)}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{padding:12px 6px;border-radius:14px;text-align:center;background:var(--accent-soft)}
+.stat:nth-child(2){background:var(--green)}
+.stat:nth-child(3){background:var(--yellow)}
+.stat b{font-size:22px;display:block}
+.stat span{font-size:11px;color:var(--muted)}
+
+h2.section-title{font-size:16px;margin:0 0 10px;display:flex;align-items:center;justify-content:space-between}
+h2.section-title .link{font-size:12px;color:var(--accent);font-weight:normal}
+
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.quick{border:1px solid var(--border);background:var(--card);border-radius:14px;position:relative;overflow:hidden}
+.quick-open{width:100%;border:0;background:none;color:var(--text);text-align:left;cursor:pointer;font-size:13px;padding:12px 34px 12px 12px}
+.quick-open b{display:block;margin-bottom:2px;font-size:13px}
+.quick-open small{color:var(--muted);font-size:11px}
+.quick-check{position:absolute;top:6px;right:6px;border:0;background:none;font-size:15px;padding:4px;line-height:1}
+.quick-open-full{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;padding:12px;text-align:left;cursor:pointer;font-size:13px}
+.quick-open-full b{display:block;margin-bottom:2px;font-size:13px}
+.quick-open-full small{color:var(--muted);font-size:11px}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.chip{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:20px;padding:8px 13px;font-size:12px;font-weight:bold}
+.chip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.search-box{display:flex;gap:8px;margin-top:10px}
+.search-box input{flex:1;padding:11px;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text)}
+.search-box button{border:0;border-radius:10px;padding:0 15px;font-size:17px;background:var(--accent);color:#fff}
+
+.lang-row{display:grid;grid-template-columns:34px 1fr 1fr;gap:6px;align-items:center;padding:8px;border:1px solid var(--border);border-radius:12px;margin-top:7px}
+.lang-row button{border:0;border-radius:9px;padding:9px;background:var(--accent-soft);color:var(--text);font-weight:bold;font-size:12px}
+
+.plan-item{border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:9px;background:var(--card)}
+.plan-item .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.plan-item .top b{font-size:14px}
+.plan-item .meta{font-size:12px;color:var(--muted);margin-top:2px}
+.badge{font-size:11px;font-weight:bold;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.badge.st-Planejada{background:var(--yellow);color:var(--yellow-text)}
+.badge.st-Realizada{background:var(--green);color:var(--green-text)}
+.badge.st-Adiada{background:var(--accent-soft);color:var(--accent)}
+.badge.st-Cancelada{background:var(--red);color:var(--red-text)}
+.badge.presente{background:var(--green);color:var(--green-text)}
+.badge.falta{background:var(--red);color:var(--red-text)}
+.plan-item .actions{display:flex;gap:8px;margin-top:8px}
+.plan-item .actions button{flex:1;border:0;border-radius:9px;padding:8px;font-size:12px;font-weight:bold;background:var(--accent-soft);color:var(--accent)}
+.plan-item .actions button.del{background:var(--red);color:var(--red-text)}
+
+.empty{text-align:center;color:var(--muted);padding:24px 10px;font-size:13px}
+
+.fab{position:fixed;right:18px;bottom:88px;width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:30px;box-shadow:0 6px 18px rgba(0,0,0,.3);z-index:20}
+
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;z-index:15;padding-bottom:env(safe-area-inset-bottom)}
+.tabbar button{flex:1;border:0;background:none;color:var(--muted);padding:10px 2px 8px;font-size:10px}
+.tabbar button .ic{display:block;font-size:19px;margin-bottom:2px}
+.tabbar button.active{color:var(--accent)}
+
+.data-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.data-action{border:0;border-radius:12px;padding:12px;font-weight:bold;font-size:13px}
+.save{background:var(--green);color:var(--green-text)}
+.delete{background:var(--red);color:var(--red-text)}
+.share{background:var(--accent-soft);color:var(--accent)}
+.export{background:#ede9fe;color:#5b21b6}
+.import{background:var(--yellow);color:var(--yellow-text)}
+:root[data-theme="dark"] .export{background:#2a2140;color:#c9b6ff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .export{background:#2a2140;color:#c9b6ff}}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);width:100%;border-radius:20px 20px 0 0;padding:18px;max-height:88vh;overflow-y:auto}
+@media (min-width:640px){
+  .modal-overlay{align-items:center}
+  .modal{width:480px;max-width:90vw;border-radius:20px;max-height:85vh}
+}
+.modal h3{margin:0 0 12px;font-size:17px}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--input-bg);color:var(--text);font-size:14px;font-family:inherit}
+.field textarea{resize:vertical;min-height:50px}
+.modal-actions{display:flex;gap:8px;margin-top:14px}
+.modal-actions button{flex:1;border:0;border-radius:11px;padding:12px;font-weight:bold;font-size:14px}
+.modal-actions .cancel{background:var(--bg);color:var(--text)}
+.modal-actions .confirm{background:var(--accent);color:#fff}
+
+.turma-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
+.turma-tabs button{flex:none;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;padding:9px 14px;font-size:13px;font-weight:bold;white-space:nowrap}
+.turma-tabs button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.aluno-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 4px;border-bottom:1px solid var(--border)}
+.aluno-row:last-child{border-bottom:0}
+.aluno-row .nome{font-size:14px;font-weight:bold}
+.aluno-row .sub{font-size:11px;color:var(--muted)}
+.aluno-row .btns{display:flex;gap:6px}
+.aluno-row .btns button{border:0;border-radius:9px;padding:7px 9px;font-size:12px;background:var(--accent-soft);color:var(--accent)}
+.aluno-row .btns button.del{background:var(--red);color:var(--red-text)}
+.pill-toggle{display:flex;gap:6px}
+.pill-toggle button{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:bold}
+.pill-toggle button.on-presente{background:var(--green);color:var(--green-text);border-color:var(--green)}
+.pill-toggle button.on-falta{background:var(--red);color:var(--red-text);border-color:var(--red)}
+.semaforo{display:flex;gap:6px}
+.semaforo-btn{border:2px solid transparent;background:var(--bg);border-radius:50%;width:32px;height:32px;font-size:15px;opacity:.4;line-height:1}
+.semaforo-btn.sel{opacity:1;border-color:var(--text)}
+</style>
+</head>
+<body class="bloqueado">
+<div id="tela-login" style="position:fixed;inset:0;background:#24364f;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px">
+  <div style="background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:360px;text-align:center;font-family:Arial,Helvetica,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.3)">
+    <div style="font-size:40px;margin-bottom:8px">📚</div>
+    <h2 style="margin:0 0 4px;color:#172033">Planejamento</h2>
+    <p style="margin:0 0 20px;color:#64748b;font-size:13px">Digite a senha de acesso</p>
+    <input type="password" id="login-senha" placeholder="Senha" inputmode="numeric"
+      style="width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:10px;font-size:16px;text-align:center;box-sizing:border-box">
+    <button id="login-botao" onclick="tentarLogin()"
+      style="width:100%;margin-top:12px;padding:12px;border:0;border-radius:10px;background:#315de8;color:#fff;font-weight:bold;font-size:15px;cursor:pointer">
+      Entrar
+    </button>
+    <p id="login-erro" style="color:#dc2626;font-size:13px;margin-top:10px;display:none"></p>
+    <p id="login-carregando" style="color:#64748b;font-size:13px;margin-top:10px;display:none">Verificando...</p>
+  </div>
+</div>
+<style>
+  body.bloqueado > *:not(#tela-login){ display:none !important; }
+</style>
+<script>
+(function(){
+  if(localStorage.getItem('planoAutenticado') !== 'sim'){
+    document.body.classList.add('bloqueado');
+  }
+})();
+async function tentarLogin(){
+  const campo = document.getElementById('login-senha');
+  const senha = campo.value.trim();
+  const erro = document.getElementById('login-erro');
+  const carregando = document.getElementById('login-carregando');
+  const botao = document.getElementById('login-botao');
+  if(!senha){ return; }
+  erro.style.display = 'none';
+  carregando.style.display = 'block';
+  botao.disabled = true;
+  try{
+    const resp = await fetch('/.netlify/functions/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ senha })
+    });
+    const dados = await resp.json();
+    carregando.style.display = 'none';
+    botao.disabled = false;
+    if(dados.ok){
+      localStorage.setItem('planoAutenticado', 'sim');
+      if(dados.nome){
+        try{
+          const perfilAtual = JSON.parse(localStorage.getItem('perfilProfessora') || 'null');
+          if(!perfilAtual || !perfilAtual.nome){
+            localStorage.setItem('perfilProfessora', JSON.stringify({ nome: dados.nome, mensagem:'Educação transforma hoje o amanhã.', foto:null }));
+          }
+        }catch(e){}
+      }
+      document.body.classList.remove('bloqueado');
+      document.getElementById('tela-login').style.display = 'none';
+    } else {
+      erro.textContent = 'Senha incorreta. Tente novamente.';
+      erro.style.display = 'block';
+    }
+  }catch(e){
+    carregando.style.display = 'none';
+    botao.disabled = false;
+    erro.textContent = 'Não foi possível verificar a senha agora. Confirme que o site está publicado no Netlify.';
+    erro.style.display = 'block';
+  }
+}
+document.addEventListener('DOMContentLoaded', function(){
+  const campo = document.getElementById('login-senha');
+  if(campo){
+    campo.addEventListener('keydown', function(e){ if(e.key === 'Enter') tentarLogin(); });
+  }
+});
+</script>
+
+
+<header>
+  <div class="row">
+    <div>
+      <h1>📚 Planejamento</h1>
+      <p>Área da professora</p>
+    </div>
+    <button class="icon-btn" onclick="abrirModalConfig()">⚙️</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- INÍCIO -->
+  <section id="view-inicio" class="view active">
+    <div class="card">
+      <div class="welcome">
+        <div class="photo" onclick="abrirModalPerfil()" style="cursor:pointer;position:relative">
+          <img id="perfil-foto-img" alt="Foto" style="display:none">
+          <div id="perfil-foto-placeholder" style="width:100%;height:100%;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--accent)">📷</div>
+          <span style="position:absolute;bottom:-2px;right:-2px;background:var(--accent);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid var(--card)">📷</span>
+        </div>
+        <div class="text"><h2>Olá, <strong id="perfil-nome">Professor(a)</strong>! 👋</h2></div>
+        <button type="button" onclick="abrirModalPerfil()" title="Editar" style="border:0;background:none;font-size:17px;color:var(--muted);flex:none;padding:4px">✏️</button>
+      </div>
+      <div class="quote">"<span id="perfil-mensagem">Educação transforma hoje o amanhã.</span>" 💙</div>
+      <button class="etapa-chip" onclick="abrirModalConfig()">
+        <span id="etapa-atual-label">🎓 Educação Infantil · Maternal II</span>
+        <span class="arrow">alterar ›</span>
+      </button>
+    </div>
+
+    <div class="card" id="card-aniversarios" style="display:none;background:var(--yellow);border-color:var(--yellow)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:26px">🎂</span>
+        <b id="aniversarios-lista" style="font-size:14px;color:var(--yellow-text)"></b>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Resumo</h2>
+      <div class="stats">
+        <div class="stat">📖<b id="st-planejadas">0</b><span>Planejadas</span></div>
+        <div class="stat">✅<b id="st-realizadas">0</b><span>Realizadas</span></div>
+        <div class="stat">🕐<b id="st-pendentes">0</b><span>Pendentes</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Próximas aulas</h2>
+      <div id="proximas-list"></div>
+    </div>
+  </section>
+
+  <!-- TURMA -->
+  <section id="view-turma" class="view">
+    <div class="card">
+      <h2 class="section-title">🏫 Minhas turmas<span class="link" onclick="abrirModalTurma()">＋ nova turma</span></h2>
+      <div class="turma-tabs" id="turma-tabs"></div>
+      <div id="turma-vazio" class="empty" style="display:none">Cadastre uma turma para começar.</div>
+    </div>
+
+    <div id="turma-conteudo" style="display:none">
+      <div class="card">
+        <h2 class="section-title">👧🧒 Alunos<span class="link" onclick="abrirModalAluno()">＋ aluno</span></h2>
+        <div id="alunos-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">✅ Chamada e acompanhamento do dia</h2>
+        <div class="field"><label>Data</label><input type="date" id="chamada-data" onchange="renderChamada()"></div>
+        <div id="chamada-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">🗂️ Portfólio da turma</h2>
+        <div id="portfolio-list"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">📊 Notas e boletim</h2>
+        <div class="field"><label>Matéria da prova</label>
+          <select id="notas-materia" onchange="renderListaNotas()"></select>
+        </div>
+        <div id="notas-lista"></div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:16px 0 10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <b style="font-size:13px">Boletim (média geral do aluno)</b>
+          <button type="button" onclick="abrirModalMediaAprovacao()" style="border:0;background:none;color:var(--accent);font-size:12px">⚙️ média p/ aprovar: <span id="media-aprovacao-label">6.0</span></button>
+        </div>
+        <div id="boletim-lista"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANOS -->
+  <section id="view-plano" class="view">
+    <div class="card">
+      <h2 class="section-title">📋 Planejamento de aulas</h2>
+      <div id="plano-list"></div>
+    </div>
+  </section>
+
+  <!-- RECURSOS -->
+  <section id="view-recursos" class="view">
+    <div class="card">
+      <h2 class="section-title">⭐ Minha Biblioteca</h2>
+      <p style="font-size:12px;color:var(--muted);margin-top:-6px">O que você favoritar aqui aparece pronto, sem precisar procurar de novo.</p>
+      <div id="biblioteca-lista"></div>
+    </div>
+    <div class="card" id="card-livros" style="display:none">
+      <h2 class="section-title">📚 Indicação de livros</h2>
+      <p style="font-size:12px;color:var(--muted);margin-top:-6px">Sugestões para indicar aos alunos ou usar em trabalhos.</p>
+      <div id="livros-lista"></div>
+    </div>
+    <div class="card" id="card-trabalhos-datas">
+      <h2 class="section-title">📄 Trabalhos prontos para datas comemorativas</h2>
+      <p style="font-size:12px;color:var(--muted);margin-top:-6px">Ajusta sozinho pela etapa selecionada em ⚙️ — mais lúdico na Infantil, mais escrito no Fundamental.</p>
+      <div class="grid">
+        <button class="quick-open-full" onclick="imprimirTrabalho('dia_do_indio')">🪶 <b>Dia do Índio</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('pascoa')">🐰 <b>Páscoa</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('dia_das_maes')">💐 <b>Dia das Mães</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('dia_dos_pais')">👔 <b>Dia dos Pais</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('carnaval')">🎭 <b>Carnaval</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('festa_junina')">🎪 <b>Festa Junina</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('boi_bumba')">🐂 <b>Boi Bumbá</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('meio_ambiente')">🌳 <b>Meio Ambiente</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('independencia')">🇧🇷 <b>Independência</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('dia_das_criancas')">🎈 <b>Dia das Crianças</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('consciencia_negra')">✊🏾 <b>Consciência Negra</b><small>Imprimir trabalho</small></button>
+        <button class="quick-open-full" onclick="imprimirTrabalho('natal')">🎄 <b>Natal</b><small>Imprimir trabalho</small></button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="section-title"><span id="icone-titulo-recursos">🧸</span> Atividades e Recursos</h2>
+      <div class="grid" id="atividades-grid"></div>
+    </div>
+    <div class="card">
+      <h2 class="section-title">✏️ Atividades rápidas</h2>
+      <div class="grid" id="rapidas-grid"></div>
+      <h3 style="font-size:13px;margin:14px 0 0">🔎 Pesquisar atividades</h3>
+      <div class="search-box">
+        <input id="busca" placeholder="Ex.: animais para colorir">
+        <button onclick="pesquisar()">🔍</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="section-title">🌎 Aprender — Português / Inglês / Italiano</h2>
+      <div class="chips" id="idiomas-chips"></div>
+      <div class="grid" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:8px">
+        <button class="quick-open-full" onclick="mostrarIdioma('ingles')">🇺🇸 <b>Inglês</b></button>
+        <button class="quick-open-full" onclick="mostrarIdioma('espanhol')">🇪🇸 <b>Espanhol</b></button>
+        <button class="quick-open-full" onclick="mostrarIdioma('italiano')">🇮🇹 <b>Italiano</b></button>
+      </div>
+      <div id="listaCoresIdiomas"></div>
+    </div>
+
+    <div class="card" id="card-tabuada" style="display:none">
+      <h2 class="section-title">🧮 Tabuada bilíngue</h2>
+      <div class="field"><label>Escolha a tabuada</label>
+        <select id="tabuada-numero" onchange="renderTabuada()"></select>
+      </div>
+      <div id="tabuada-lista"></div>
+    </div>
+  </section>
+
+  <!-- MAIS -->
+  <section id="view-mais" class="view">
+    <div class="card">
+      <h2 class="section-title">⚙️ Configuração</h2>
+      <button class="etapa-chip" onclick="abrirModalConfig()">
+        <span id="etapa-atual-label-2">🎓 Educação Infantil · Maternal II</span>
+        <span class="arrow">alterar ›</span>
+      </button>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">🪪 Mais opções</h2>
+      <div class="grid" id="mais-grid"></div>
+    </div>
+
+    <div class="card" id="card-provas" style="display:none">
+      <h2 class="section-title">📝 Provas rápidas</h2>
+      <p style="font-size:12px;color:var(--muted);margin-top:-6px">Perguntas prontas para imprimir na hora, caso não tenha preparado nada ainda.</p>
+      <div class="field"><label>Matéria</label>
+        <select id="prova-materia"></select>
+      </div>
+      <div style="background:var(--accent-soft);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--accent);margin-bottom:10px">
+        🔒 As perguntas ficam ocultas aqui de propósito, para que os alunos não vejam a prova antecipadamente. Use os botões abaixo.
+      </div>
+      <div class="field"><label>Quantas versões diferentes imprimir</label>
+        <select id="prova-qtd-versoes">
+          <option value="1">1 versão (todos iguais)</option>
+          <option value="2">2 versões (A e B, embaralhadas)</option>
+          <option value="3">3 versões (A, B e C, embaralhadas)</option>
+        </select>
+      </div>
+      <div class="data-actions" style="margin-top:10px">
+        <button class="data-action share" onclick="imprimirProva()">🖨️ Imprimir prova</button>
+        <button class="data-action save" onclick="acessarGabarito()">🔒 Ver gabarito</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">📅 Calendário letivo<span class="link" onclick="abrirModalEvento()">＋ evento</span></h2>
+      <div id="calendario-list"></div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">📣 Comunicados aos pais<span class="link" onclick="abrirModalComunicado()">＋ novo</span></h2>
+      <div id="comunicados-list"></div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">🔄 Atualizar aplicativo</h2>
+      <p style="font-size:12px;color:var(--muted);margin-top:-6px">Use depois que uma nova versão do app for publicada, pra garantir que o celular carregue a mais recente (sem depender de cache antigo).</p>
+      <button type="button" onclick="atualizarAplicativo()" style="width:100%;border:0;border-radius:12px;padding:13px;background:var(--accent-soft);color:var(--accent);font-weight:bold">🔄 Atualizar aplicativo</button>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">💾 Salvar e organizar</h2>
+      <div class="data-actions">
+        <button class="data-action save" onclick="salvarTudo()">💾 Salvar</button>
+        <button class="data-action delete" onclick="excluirDados()">🗑️ Excluir</button>
+        <button class="data-action share" onclick="compartilhar()">📤 Compartilhar</button>
+        <button class="data-action export" onclick="exportar()">📦 Exportar</button>
+        <button class="data-action import" onclick="document.getElementById('arquivo').click()">📥 Importar</button>
+      </div>
+      <input id="arquivo" type="file" accept=".json" hidden onchange="importar(event)">
+      <p style="color:var(--muted);font-size:12px;margin-top:10px">Os dados ficam salvos neste aparelho.</p>
+    </div>
+  </section>
+
+</main>
+
+<button class="fab" id="fab" onclick="abrirModalPlano()">＋</button>
+
+<nav class="tabbar">
+  <button class="tab active" data-view="inicio" onclick="mudarAba('inicio')"><span class="ic">🏠</span>Início</button>
+  <button class="tab" data-view="turma" onclick="mudarAba('turma')"><span class="ic">🏫</span>Turma</button>
+  <button class="tab" data-view="plano" onclick="mudarAba('plano')"><span class="ic">📋</span>Planos</button>
+  <button class="tab" data-view="recursos" onclick="mudarAba('recursos')"><span class="ic" id="icone-aba-recursos">🧸</span>Recursos</button>
+  <button class="tab" data-view="mais" onclick="mudarAba('mais')"><span class="ic">🪪</span>Mais</button>
+</nav>
+
+<!-- MODAL: editar boas-vindas (nome, mensagem, foto) -->
+<div class="modal-overlay" id="modal-perfil">
+  <div class="modal">
+    <h3>Editar boas-vindas</h3>
+    <div class="field"><label>Seu nome</label><input type="text" id="fp-nome" placeholder="Ex.: Adriana"></div>
+    <div class="field"><label>Mensagem / frase do dia</label><input type="text" id="fp-mensagem" placeholder="Ex.: Educação transforma hoje o amanhã."></div>
+    <div class="field">
+      <label>Foto (opcional)</label>
+      <input type="file" accept="image/*" id="fp-foto" onchange="preverFotoPerfil(event)">
+      <div id="fp-preview" style="margin-top:8px"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-perfil')">Cancelar</button>
+      <button class="confirm" onclick="salvarPerfil()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: config etapa/nível -->
+<div class="modal-overlay" id="modal-config">
+  <div class="modal">
+    <h3>🎓 Etapa e nível/ano</h3>
+    <p style="font-size:12px;color:var(--muted);margin-top:-6px">Isso ajusta os campos de planejamento (campo de experiência ou componente curricular) e o conteúdo sugerido no app.</p>
+    <div class="field">
+      <label>Etapa</label>
+      <select id="cfg-etapa" onchange="atualizarNiveisConfig()">
+        <option>Educação Infantil</option>
+        <option>Fundamental I</option>
+        <option>Fundamental II</option>
+        <option>Ensino Médio</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Nível / ano / série</label>
+      <select id="cfg-nivel"></select>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-config')">Cancelar</button>
+      <button class="confirm" onclick="salvarConfig()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: novo/editar plano -->
+<div class="modal-overlay" id="modal-plano">
+  <div class="modal">
+    <h3 id="modal-titulo">Nova aula</h3>
+    <div class="field"><label>Data</label><input type="date" id="f-data"></div>
+    <div class="field"><label>Turma</label><input type="text" id="f-turma" list="lista-turmas" placeholder="Ex.: Maternal II"></div>
+    <datalist id="lista-turmas"></datalist>
+    <div class="field"><label>Tema / Atividade</label><input type="text" id="f-tema" placeholder="Ex.: Cores primárias"></div>
+    <div class="field"><label id="label-campo-bncc">Campo de experiência (BNCC)</label>
+      <select id="f-campo" onchange="renderSugestoesPlano()"></select>
+      <button type="button" onclick="consultarSite()" style="margin-top:7px;width:100%;border:0;border-radius:10px;padding:10px;background:var(--accent-soft);color:var(--accent);font-weight:bold;font-size:13px">🌐 Consultar site sobre este tema</button>
+    </div>
+    <div class="field" id="sugestoes-wrap">
+      <label>💡 Sugestões prontas (toque para usar)</label>
+      <div class="chips" id="sugestoes-chips"></div>
+    </div>
+    <div class="field"><label>Objetivo</label><textarea id="f-objetivo" placeholder="O que a criança vai aprender"></textarea></div>
+    <div class="field"><label>Recursos necessários</label><input type="text" id="f-recursos" placeholder="Ex.: tinta, papel, pincel"></div>
+    <div class="field"><label>Duração (min)</label><input type="number" id="f-duracao" placeholder="Ex.: 40"></div>
+    <div class="field"><label>Status</label>
+      <select id="f-status"><option>Planejada</option><option>Realizada</option><option>Adiada</option><option>Cancelada</option></select>
+    </div>
+    <div class="field"><label>Observações</label><textarea id="f-obs" placeholder="Opcional"></textarea></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-plano')">Cancelar</button>
+      <button class="confirm" onclick="salvarPlano()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: nova turma -->
+<div class="modal-overlay" id="modal-turma">
+  <div class="modal">
+    <h3>Nova turma</h3>
+    <div class="field"><label>Nome da turma</label><input type="text" id="ft-nome" placeholder="Ex.: Maternal II"></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-turma')">Cancelar</button>
+      <button class="confirm" onclick="salvarTurma()">Criar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: novo aluno -->
+<div class="modal-overlay" id="modal-aluno">
+  <div class="modal">
+    <h3>Novo aluno</h3>
+    <div class="field"><label>Nome do aluno</label><input type="text" id="fa-nome" placeholder="Ex.: João Pedro"></div>
+    <div class="field"><label>Data de nascimento (opcional)</label><input type="date" id="fa-nascimento"></div>
+    <div class="field">
+      <label>Foto (opcional, ajuda na chamada)</label>
+      <input type="file" accept="image/*" id="fa-foto" onchange="preverFotoAluno(event)">
+      <div id="fa-foto-preview" style="margin-top:8px"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-aluno')">Cancelar</button>
+      <button class="confirm" onclick="salvarAluno()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: nota de portfólio -->
+<div class="modal-overlay" id="modal-portfolio">
+  <div class="modal">
+    <h3 id="portfolio-titulo">Nova observação</h3>
+    <div class="field"><label>Data</label><input type="date" id="fp-data"></div>
+    <div class="field"><label>Observação</label><textarea id="fp-texto" placeholder="Ex.: Reconheceu as cores primárias com facilidade"></textarea></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-portfolio')">Cancelar</button>
+      <button class="confirm" onclick="salvarPortfolio()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: evento do calendário -->
+<div class="modal-overlay" id="modal-evento">
+  <div class="modal">
+    <h3>Novo evento</h3>
+    <div class="field"><label>Data</label><input type="date" id="fe-data"></div>
+    <div class="field"><label>Título</label><input type="text" id="fe-titulo" placeholder="Ex.: Reunião de pais"></div>
+    <div class="field"><label>Tipo</label>
+      <select id="fe-tipo"><option>Reunião</option><option>Feriado</option><option>Recesso</option><option>Evento</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-evento')">Cancelar</button>
+      <button class="confirm" onclick="salvarEvento()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: comunicado -->
+<div class="modal-overlay" id="modal-comunicado">
+  <div class="modal">
+    <h3>Novo comunicado</h3>
+    <div class="field"><label>Data</label><input type="date" id="fc-data"></div>
+    <div class="field"><label>Mensagem para os pais</label><textarea id="fc-texto" placeholder="Ex.: Amanhã é dia de levar uma fruta para a atividade de culinária"></textarea></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-comunicado')">Cancelar</button>
+      <button class="confirm" onclick="salvarComunicado()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: conteúdo pronto -->
+<div class="modal-overlay" id="modal-conteudo">
+  <div class="modal">
+    <h3 id="conteudo-titulo">Conteúdo</h3>
+    <div id="conteudo-corpo"></div>
+    <div class="data-actions" style="margin:14px 0 0">
+      <button type="button" class="data-action share" onclick="imprimirConteudo(conteudoAtualId)">🖨️ Imprimir</button>
+      <button type="button" class="data-action save" onclick="compartilharConteudo(conteudoAtualId)">📤 Compartilhar</button>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-conteudo')">Fechar</button>
+      <button class="confirm" onclick="favoritarConteudo()">⭐ Favoritar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: senha do gabarito -->
+<div class="modal-overlay" id="modal-pin">
+  <div class="modal">
+    <h3 id="pin-titulo">Criar senha do gabarito</h3>
+    <p id="pin-sub" style="font-size:12px;color:var(--muted);margin-top:-6px">Essa senha protege o gabarito para que os alunos não vejam sem você por perto.</p>
+    <div class="field"><label>Senha de 4 números</label>
+      <input type="tel" inputmode="numeric" maxlength="4" id="pin-input" placeholder="••••">
+    </div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-pin')">Cancelar</button>
+      <button class="confirm" onclick="confirmarPin()">Confirmar</button>
+    </div>
+    <button type="button" onclick="esqueciSenhaPin()" style="margin-top:12px;width:100%;border:0;background:none;color:var(--muted);font-size:12px;text-decoration:underline">Esqueci a senha</button>
+  </div>
+</div>
+
+<!-- MODAL: gabarito -->
+<div class="modal-overlay" id="modal-gabarito">
+  <div class="modal">
+    <h3 id="gabarito-titulo">Gabarito</h3>
+    <div id="gabarito-corpo"></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-gabarito')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: correção de prova (toca as respostas do aluno, a nota sai sozinha) -->
+<div class="modal-overlay" id="modal-correcao">
+  <div class="modal">
+    <h3 id="correcao-titulo">Corrigindo</h3>
+    <div id="correcao-corpo"></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="fecharModal('modal-correcao')">Cancelar</button>
+      <button class="confirm" onclick="salvarCorrecao()">Calcular e salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* Alarme de erro: se algo quebrar de verdade, mostra na tela em vez de falhar em silêncio */
+window.addEventListener('error', function(e){
+  try{
+    alert('⚠️ Deu erro no app — tira um print disso e manda:\n\n' + e.message + '\n(linha ' + e.lineno + ', coluna ' + e.colno + ')');
+  }catch(_){}
+});
+
+/* ================= dados fixos ================= */
+const ETAPAS = {
+  'Educação Infantil': ['Berçário I','Berçário II','Maternal I','Maternal II','Pré I','Pré II'],
+  'Fundamental I': ['1º ano','2º ano','3º ano','4º ano','5º ano'],
+  'Fundamental II': ['6º ano','7º ano','8º ano','9º ano'],
+  'Ensino Médio': ['1ª série','2ª série','3ª série']
+};
+const CAMPOS_BNCC_INFANTIL = [
+  'O eu, o outro e o nós','Corpo, gestos e movimentos','Traços, sons, cores e formas',
+  'Escuta, fala, pensamento e imaginação','Espaços, tempos, quantidades, relações e transformações'
+];
+/* fórmulas rápidas de matemática, separadas por série do Ensino Médio */
+const FORMULAS_1SERIE = [
+  { t:'Equação do 2º grau (Bhaskara)', d:'x = (−b ± √(b²−4ac)) / 2a' },
+  { t:'Soma e produto das raízes', d:'S = −b/a   ·   P = c/a' },
+  { t:'Regra de três simples', d:'a/b = c/x  →  x = (b × c) / a' },
+  { t:'Porcentagem', d:'valor = (percentual ÷ 100) × total' },
+  { t:'Função afim', d:'f(x) = ax + b (reta; a = coeficiente angular, b = onde corta o eixo y)' },
+  { t:'Função quadrática — vértice', d:'xᵥ = −b/2a    yᵥ = −Δ/4a  (Δ = b²−4ac)' },
+  { t:'Progressão Aritmética — termo geral', d:'aₙ = a₁ + (n−1) × r' },
+  { t:'Progressão Aritmética — soma dos termos', d:'Sₙ = (a₁ + aₙ) × n / 2' },
+  { t:'Progressão Geométrica — termo geral', d:'aₙ = a₁ × q^(n−1)' },
+  { t:'Progressão Geométrica — soma finita', d:'Sₙ = a₁ × (qⁿ − 1) / (q − 1)' },
+];
+const FORMULAS_2SERIE = [
+  { t:'Área do triângulo', d:'A = (base × altura) / 2' },
+  { t:'Área do círculo', d:'A = π × r²' },
+  { t:'Comprimento da circunferência', d:'C = 2 × π × r' },
+  { t:'Área do trapézio', d:'A = (Base maior + Base menor) × altura / 2' },
+  { t:'Teorema de Pitágoras', d:'hipotenusa² = cateto₁² + cateto₂²' },
+  { t:'Razões trigonométricas', d:'sen = oposto/hipotenusa · cos = adjacente/hipotenusa · tg = oposto/adjacente' },
+  { t:'Ângulos notáveis', d:'30°: sen ½, cos √3/2 · 45°: sen=cos=√2/2 · 60°: sen √3/2, cos ½' },
+  { t:'Volume do cubo', d:'V = a³ (aresta ao cubo)' },
+  { t:'Volume do cilindro', d:'V = π × r² × h' },
+  { t:'Volume da esfera', d:'V = (4/3) × π × r³' },
+  { t:'Volume do cone', d:'V = (π × r² × h) / 3' },
+];
+const FORMULAS_3SERIE = [
+  { t:'Distância entre dois pontos', d:'d = √((x₂−x₁)² + (y₂−y₁)²)' },
+  { t:'Ponto médio entre dois pontos', d:'M = ( (x₁+x₂)/2 , (y₁+y₂)/2 )' },
+  { t:'Equação da reta', d:'y = mx + n (m = coeficiente angular, n = ponto onde corta o eixo y)' },
+  { t:'Permutação simples', d:'Pₙ = n!' },
+  { t:'Combinação simples', d:'Cₙ,ₚ = n! / [ p! × (n−p)! ]' },
+  { t:'Probabilidade', d:'P = casos favoráveis / casos possíveis' },
+  { t:'Média aritmética simples', d:'média = soma dos valores / quantidade de valores' },
+];
+/* exercícios rápidos com resposta trancada, por série */
+const EXERCICIOS_FORMULAS = {
+  '1ª série': [
+    { pergunta:'Resolva: x² − 5x + 6 = 0', resposta:'x = 2 ou x = 3' },
+    { pergunta:'Some os 10 primeiros termos da PA (2, 5, 8, ...)', resposta:'S₁₀ = 155' },
+    { pergunta:'Calcule 20% de 350', resposta:'70' },
+  ],
+  '2ª série': [
+    { pergunta:'Calcule a área de um triângulo de base 8 cm e altura 5 cm', resposta:'20 cm²' },
+    { pergunta:'Calcule sen(30°) + cos(60°)', resposta:'1' },
+    { pergunta:'Calcule o volume de um cubo de aresta 4 cm', resposta:'64 cm³' },
+  ],
+  '3ª série': [
+    { pergunta:'Calcule a distância entre os pontos (0,0) e (3,4)', resposta:'5' },
+    { pergunta:'De quantas formas 3 pessoas podem se sentar em 3 cadeiras?', resposta:'6 (3! = 6)' },
+    { pergunta:'Qual a probabilidade de tirar um número par em um dado de 6 faces?', resposta:'3/6 = 1/2' },
+  ],
+};
+function atualizarConteudoFormulas(){
+  const c = CONTEUDOS.formulas_medio;
+  if(config.nivel === '1ª série'){ c.dados = FORMULAS_1SERIE; c.titulo = '🧮 Fórmulas rápidas — 1ª série do Ensino Médio'; }
+  else if(config.nivel === '2ª série'){ c.dados = FORMULAS_2SERIE; c.titulo = '🧮 Fórmulas rápidas — 2ª série do Ensino Médio'; }
+  else if(config.nivel === '3ª série'){ c.dados = FORMULAS_3SERIE; c.titulo = '🧮 Fórmulas rápidas — 3ª série do Ensino Médio'; }
+  else { c.dados = [...FORMULAS_1SERIE, ...FORMULAS_2SERIE, ...FORMULAS_3SERIE]; c.titulo = '🧮 Fórmulas rápidas — 1ª a 3ª série do Ensino Médio'; }
+}
+
+const COMPONENTES_FUNDAMENTAL = [
+  'Língua Portuguesa','Matemática','Ciências','História','Geografia','Arte','Educação Física','Inglês','Ensino Religioso'
+];
+const COMPONENTES_MEDIO = [
+  'Língua Portuguesa','Matemática','Biologia','Física','Química','História','Geografia','Arte','Educação Física','Inglês','Sociologia','Filosofia'
+];
+function getComponentesAtuais(){
+  return config.etapa === 'Ensino Médio' ? COMPONENTES_MEDIO : COMPONENTES_FUNDAMENTAL;
+}
+
+/* banco de provas rápidas — nível introdutório, ajuste conforme o ano/série da turma */
+const BANCO_PROVAS = {
+  'Língua Portuguesa': [
+    { pergunta:'Qual é a classe gramatical da palavra "rápido" na frase "O carro é rápido"?', alternativas:['Substantivo','Verbo','Adjetivo','Advérbio'], correta:2 },
+    { pergunta:'Assinale o antônimo de "alegre":', alternativas:['Feliz','Triste','Contente','Sorridente'], correta:1 },
+    { pergunta:'Quantas sílabas tem a palavra "computador"?', alternativas:['3','4','5','6'], correta:1 },
+    { pergunta:'Qual das opções é um substantivo próprio?', alternativas:['cidade','Brasil','rio','montanha'], correta:1 },
+    { pergunta:'A frase "Ela correu rapidamente" contém um(a):', alternativas:['Substantivo','Adjetivo','Advérbio','Pronome'], correta:2 },
+  ],
+  'Matemática': [
+    { pergunta:'Quanto é 7 × 8?', alternativas:['54','56','58','64'], correta:1 },
+    { pergunta:'Qual é o resultado de 100 ÷ 4?', alternativas:['20','25','30','40'], correta:1 },
+    { pergunta:'Quanto é 15 + 27?', alternativas:['42','32','40','52'], correta:0 },
+    { pergunta:'Qual fração representa metade de um inteiro?', alternativas:['1/4','1/2','2/3','3/4'], correta:1 },
+    { pergunta:'Quanto é 9 ao quadrado (9²)?', alternativas:['18','81','72','99'], correta:1 },
+  ],
+  'Ciências': [
+    { pergunta:'Qual gás as plantas liberam durante a fotossíntese?', alternativas:['Gás carbônico','Oxigênio','Nitrogênio','Hidrogênio'], correta:1 },
+    { pergunta:'O corpo humano adulto tem aproximadamente quantos ossos?', alternativas:['106','156','206','256'], correta:2 },
+    { pergunta:'Qual destes é um estado físico da água?', alternativas:['Sólido','Gasoso','Líquido','Todas as anteriores'], correta:3 },
+    { pergunta:'Qual órgão bombeia o sangue no corpo?', alternativas:['Pulmão','Coração','Fígado','Rim'], correta:1 },
+    { pergunta:'Animais que se alimentam só de plantas são chamados de:', alternativas:['Carnívoros','Herbívoros','Onívoros','Insetívoros'], correta:1 },
+  ],
+  'História': [
+    { pergunta:'Em que ano o Brasil foi encontrado pelos portugueses?', alternativas:['1500','1600','1822','1889'], correta:0 },
+    { pergunta:'Quem proclamou a independência do Brasil?', alternativas:['Dom Pedro I','Dom Pedro II','Tiradentes','Getúlio Vargas'], correta:0 },
+    { pergunta:'Em que ano foi proclamada a República no Brasil?', alternativas:['1822','1889','1500','1930'], correta:1 },
+    { pergunta:'Qual civilização construiu as pirâmides do Egito?', alternativas:['Romanos','Gregos','Egípcios','Maias'], correta:2 },
+    { pergunta:'Quem foi Tiradentes?', alternativas:['Um rei português','Líder da Inconfidência Mineira','Um explorador','Um imperador'], correta:1 },
+  ],
+  'Geografia': [
+    { pergunta:'Qual é a capital do Brasil?', alternativas:['Rio de Janeiro','São Paulo','Brasília','Salvador'], correta:2 },
+    { pergunta:'Qual é o maior oceano do mundo?', alternativas:['Atlântico','Índico','Pacífico','Ártico'], correta:2 },
+    { pergunta:'Em qual continente fica o Brasil?', alternativas:['África','América do Sul','Ásia','Europa'], correta:1 },
+    { pergunta:'Qual é o maior rio do mundo em volume de água?', alternativas:['Nilo','Amazonas','Mississippi','Danúbio'], correta:1 },
+    { pergunta:'Qual é o ponto mais alto do Brasil?', alternativas:['Pico da Neblina','Pico da Bandeira','Monte Roraima','Serra do Mar'], correta:0 },
+  ],
+  'Arte': [
+    { pergunta:'Quem pintou a obra "Abaporu"?', alternativas:['Pablo Picasso','Tarsila do Amaral','Cândido Portinari','Leonardo da Vinci'], correta:1 },
+    { pergunta:'Qual cor é obtida pela mistura de azul e amarelo?', alternativas:['Roxo','Verde','Laranja','Marrom'], correta:1 },
+    { pergunta:'O que é escultura?', alternativas:['Uma pintura em tela','Uma obra de arte em três dimensões','Um tipo de música','Um poema'], correta:1 },
+    { pergunta:'Quais são as cores primárias?', alternativas:['Verde, laranja e roxo','Azul, vermelho e amarelo','Preto, branco e cinza','Rosa, azul e verde'], correta:1 },
+    { pergunta:'Qual movimento teve a Semana de Arte Moderna de 1922 como marco no Brasil?', alternativas:['Barroco','Modernismo','Impressionismo','Renascimento'], correta:1 },
+  ],
+  'Educação Física': [
+    { pergunta:'Quantos jogadores tem um time de futebol em campo?', alternativas:['9','10','11','12'], correta:2 },
+    { pergunta:'Qual é o principal benefício do alongamento antes do exercício?', alternativas:['Aumentar a fome','Prevenir lesões','Emagrecer rápido','Aumentar a altura'], correta:1 },
+    { pergunta:'Em que esporte se usa raquete e peteca?', alternativas:['Tênis','Badminton','Vôlei','Squash'], correta:1 },
+    { pergunta:'Quantos tempos tem uma partida oficial de basquete?', alternativas:['2','3','4','5'], correta:2 },
+    { pergunta:'Qual capacidade física é trabalhada ao correr uma longa distância?', alternativas:['Força','Resistência','Flexibilidade','Velocidade'], correta:1 },
+  ],
+  'Inglês': [
+    { pergunta:'Qual é a tradução de "book"?', alternativas:['Caderno','Livro','Mesa','Caneta'], correta:1 },
+    { pergunta:'Como se diz "obrigado" em inglês?', alternativas:['Please','Sorry','Thank you','Excuse me'], correta:2 },
+    { pergunta:'Qual é o plural de "child"?', alternativas:['Childs','Children','Childes',"Child's"], correta:1 },
+    { pergunta:'Complete: "I ___ a student."', alternativas:['is','am','are','be'], correta:1 },
+    { pergunta:'Qual é o oposto de "big"?', alternativas:['Small','Tall','Long','Wide'], correta:0 },
+  ],
+  'Ensino Religioso': [
+    { pergunta:'O que estuda o Ensino Religioso na escola pública brasileira?', alternativas:['Apenas uma religião específica','Diversidade religiosa e cultural, de forma não confessional','Apenas ateísmo','Apenas história da Igreja Católica'], correta:1 },
+    { pergunta:'O que significa "tolerância religiosa"?', alternativas:['Impor uma crença aos outros','Respeitar as diferentes crenças e práticas religiosas','Ignorar todas as religiões','Seguir apenas uma tradição'], correta:1 },
+    { pergunta:'Qual valor é comum à maioria das tradições religiosas e filosóficas?', alternativas:['Egoísmo','Respeito ao próximo','Indiferença','Competição'], correta:1 },
+    { pergunta:'Uma característica do Brasil em relação à religião é:', alternativas:['Ter uma religião oficial','Ser um país laico com diversidade religiosa','Proibir práticas religiosas','Ter religião obrigatória'], correta:1 },
+    { pergunta:'O que caracteriza um símbolo religioso?', alternativas:['Um objeto sem significado','Uma representação carregada de significado para uma fé ou tradição','Apenas um enfeite','Um item de decoração comum'], correta:1 },
+  ],
+  'Biologia': [
+    { pergunta:'Qual é a unidade básica da vida?', alternativas:['Átomo','Célula','Tecido','Órgão'], correta:1 },
+    { pergunta:'O processo de divisão celular que forma os gametas é chamado de:', alternativas:['Mitose','Meiose','Fotossíntese','Osmose'], correta:1 },
+    { pergunta:'Qual molécula carrega a informação genética?', alternativas:['Proteína','DNA','Lipídio','Glicose'], correta:1 },
+    { pergunta:'A fotossíntese ocorre em qual organela da célula vegetal?', alternativas:['Mitocôndria','Cloroplasto','Núcleo','Ribossomo'], correta:1 },
+    { pergunta:'Qual reino inclui os fungos?', alternativas:['Plantae','Animalia','Fungi','Monera'], correta:2 },
+  ],
+  'Física': [
+    { pergunta:'Qual é a unidade de medida de força no Sistema Internacional?', alternativas:['Joule','Newton','Watt','Pascal'], correta:1 },
+    { pergunta:'A velocidade da luz no vácuo é aproximadamente:', alternativas:['300 km/s','300.000 km/s','30.000 km/s','3.000.000 km/s'], correta:1 },
+    { pergunta:'Qual lei afirma que "a força é igual à massa vezes a aceleração"?', alternativas:['Lei da Gravitação','2ª Lei de Newton','Lei de Ohm','Lei de Hooke'], correta:1 },
+    { pergunta:'O que um termômetro mede?', alternativas:['Pressão','Temperatura','Velocidade','Massa'], correta:1 },
+    { pergunta:'Qual é a unidade de energia no Sistema Internacional?', alternativas:['Newton','Watt','Joule','Ampère'], correta:2 },
+  ],
+  'Química': [
+    { pergunta:'Qual é o símbolo químico do ouro?', alternativas:['Ag','Au','Fe','O'], correta:1 },
+    { pergunta:'Qual é a fórmula química da água?', alternativas:['CO2','H2O','O2','NaCl'], correta:1 },
+    { pergunta:'O que é um átomo?', alternativas:['A menor partícula de um elemento químico','Uma mistura de substâncias','Um tipo de energia','Uma reação química'], correta:0 },
+    { pergunta:'Qual é o pH aproximado de uma substância neutra?', alternativas:['0','7','14','10'], correta:1 },
+    { pergunta:'Qual estado físico tem forma e volume definidos?', alternativas:['Sólido','Líquido','Gasoso','Plasma'], correta:0 },
+  ],
+  'Sociologia': [
+    { pergunta:'Quem é considerado um dos fundadores da Sociologia?', alternativas:['Émile Durkheim','Isaac Newton','Charles Darwin','Sigmund Freud'], correta:0 },
+    { pergunta:'O que a Sociologia estuda?', alternativas:['Os fenômenos naturais','As relações e estruturas sociais','Os corpos celestes','As reações químicas'], correta:1 },
+    { pergunta:'O que é "cultura" para a Sociologia?', alternativas:['Apenas artes eruditas','Conjunto de valores, costumes e práticas de um grupo','Só festas populares','Apenas religião'], correta:1 },
+    { pergunta:'O que caracteriza uma classe social?', alternativas:['Cor dos olhos','Posição econômica e social','Altura','Time de futebol favorito'], correta:1 },
+    { pergunta:'O que é preconceito?', alternativas:['Uma opinião formada com base em fatos','Um julgamento prévio sem base em conhecimento real','Um tipo de lei','Uma tradição cultural'], correta:1 },
+  ],
+  'Filosofia': [
+    { pergunta:'Quem é considerado o "pai da Filosofia ocidental"?', alternativas:['Sócrates','Tales de Mileto','Aristóteles','Platão'], correta:1 },
+    { pergunta:'O método de Sócrates de fazer perguntas para chegar à verdade é chamado de:', alternativas:['Dialética','Maiêutica','Retórica','Lógica'], correta:1 },
+    { pergunta:'O que é Ética?', alternativas:['O estudo das leis físicas','O estudo da moral e dos valores','O estudo dos números','O estudo das plantas'], correta:1 },
+    { pergunta:'Quem escreveu "A República"?', alternativas:['Aristóteles','Sócrates','Platão','Descartes'], correta:2 },
+    { pergunta:'"Penso, logo existo" é uma frase de qual filósofo?', alternativas:['Immanuel Kant','René Descartes','Karl Marx','Friedrich Nietzsche'], correta:1 },
+  ],
+};
+
+const SITE_INFANTIL = 'https://www.todamateria.com.br/educacao-infantil/';
+const SITES_COMPONENTE = {
+  'Língua Portuguesa':'https://www.todamateria.com.br/portugues/',
+  'Matemática':'https://www.todamateria.com.br/matematica/',
+  'Ciências':'https://www.todamateria.com.br/biologia/',
+  'História':'https://www.todamateria.com.br/historia/',
+  'Geografia':'https://www.todamateria.com.br/geografia/',
+  'Arte':'https://www.todamateria.com.br/artes/',
+  'Educação Física':'https://www.todamateria.com.br/educacao-fisica/',
+  'Inglês':'https://www.todamateria.com.br/ingles/',
+  'Ensino Religioso': null
+};
+const SUGESTOES_INFANTIL = {
+  'O eu, o outro e o nós': [
+    { tema:'Roda de conversa sobre sentimentos', objetivo:'Reconhecer e nomear emoções básicas', recursos:'Cartões com carinhas de emoções' },
+    { tema:'Jogo da amizade', objetivo:'Estimular o respeito e a colaboração entre colegas', recursos:'Bola macia, música' }
+  ],
+  'Corpo, gestos e movimentos': [
+    { tema:'Circuito motor', objetivo:'Desenvolver equilíbrio e coordenação motora ampla', recursos:'Cones, arcos, colchonetes' },
+    { tema:'Dança das cadeiras', objetivo:'Trabalhar ritmo, atenção e coordenação', recursos:'Cadeiras, aparelho de som' }
+  ],
+  'Traços, sons, cores e formas': [
+    { tema:'Pintura com carimbo de mão', objetivo:'Explorar cores e texturas através do tato', recursos:'Tinta guache, papel kraft' },
+    { tema:'Colagem com formas geométricas', objetivo:'Reconhecer formas geométricas básicas', recursos:'Papel colorido, tesoura sem ponta, cola' }
+  ],
+  'Escuta, fala, pensamento e imaginação': [
+    { tema:'Contação de história com fantoches', objetivo:'Estimular a escuta, atenção e imaginação', recursos:'Fantoches, livro de história' },
+    { tema:'Roda de rimas', objetivo:'Desenvolver a consciência fonológica', recursos:'Livro de poesias infantis' }
+  ],
+  'Espaços, tempos, quantidades, relações e transformações': [
+    { tema:'Classificação por tamanho', objetivo:'Desenvolver noções de comparação e classificação', recursos:'Objetos de tamanhos variados' },
+    { tema:'Sequência numérica com blocos', objetivo:'Reconhecer a sequência numérica de 1 a 10', recursos:'Blocos de montar numerados' }
+  ]
+};
+const SUGESTOES_COMPONENTE = {
+  'Língua Portuguesa': [
+    { tema:'Interpretação de texto', objetivo:'Desenvolver a compreensão leitora', recursos:'Texto impresso, questionário' },
+    { tema:'Produção de pequeno texto', objetivo:'Estimular a escrita e a criatividade', recursos:'Papel, lápis' }
+  ],
+  'Matemática': [
+    { tema:'Operações básicas', objetivo:'Praticar adição e subtração', recursos:'Quadro, exercícios impressos' },
+    { tema:'Frações com material concreto', objetivo:'Compreender o conceito de fração', recursos:'Círculos de EVA divididos' }
+  ],
+  'Ciências': [
+    { tema:'Ciclo da água', objetivo:'Compreender o ciclo da água na natureza', recursos:'Cartaz ilustrativo, vídeo' },
+    { tema:'Partes da planta', objetivo:'Identificar raiz, caule, folha, flor e fruto', recursos:'Planta real ou imagens' }
+  ],
+  'História': [
+    { tema:'Linha do tempo da família', objetivo:'Compreender noções de passado e presente', recursos:'Fotos, cartolina' },
+    { tema:'Povos indígenas do Brasil', objetivo:'Conhecer a cultura indígena brasileira', recursos:'Imagens, textos informativos' }
+  ],
+  'Geografia': [
+    { tema:'Pontos cardeais', objetivo:'Reconhecer e usar os pontos cardeais', recursos:'Bússola, mapa' },
+    { tema:'Paisagens naturais e urbanas', objetivo:'Diferenciar paisagens naturais de urbanas', recursos:'Imagens variadas' }
+  ],
+  'Arte': [
+    { tema:'Mistura de cores', objetivo:'Explorar cores primárias e secundárias', recursos:'Tinta guache, paleta' },
+    { tema:'Arte com sucata', objetivo:'Estimular a criatividade com materiais recicláveis', recursos:'Caixas, potes, cola' }
+  ],
+  'Educação Física': [
+    { tema:'Brincadeiras populares', objetivo:'Resgatar jogos tradicionais e desenvolver coordenação', recursos:'Corda, bola, giz' },
+    { tema:'Circuito de habilidades', objetivo:'Trabalhar agilidade e equilíbrio', recursos:'Cones, bambolês' }
+  ],
+  'Inglês': [
+    { tema:'Vocabulário: cores e números', objetivo:'Introduzir vocabulário básico em inglês', recursos:'Flashcards' },
+    { tema:'Cumprimentos em inglês', objetivo:'Praticar diálogos simples do dia a dia', recursos:'Cartazes com frases' }
+  ],
+  'Ensino Religioso': [
+    { tema:'Respeito às diferenças', objetivo:'Refletir sobre diversidade cultural e religiosa', recursos:'Roda de conversa' }
+  ]
+};
+
+/* ================= estado ================= */
+let planos = [], checklist = {}, config = { etapa:'Educação Infantil', nivel:'Maternal II' };
+let turmas = [], chamadas = {}, portfolio = {}, acompanhamento = {}, notas = {};
+let mediaAprovacao = 6;
+let calendario = [], comunicados = [];
+let biblioteca = [];
+let conteudoAtualId = null;
+let editandoId = null, turmaSelecionadaId = null, alunoPortfolioAtual = null;
+let correcaoAtual = { alunoId:null, materia:null, respostas:[] };
+
+function carregarTudo(){
+  const g = (k,d) => { try{ return JSON.parse(localStorage.getItem(k) || JSON.stringify(d)); }catch(e){ return d; } };
+  planos = g('planos', []);
+  checklist = g('checklist', {});
+  config = g('config', { etapa:'Educação Infantil', nivel:'Maternal II' });
+  turmas = g('turmas', []);
+  chamadas = g('chamadas', {});
+  portfolio = g('portfolio', {});
+  acompanhamento = g('acompanhamento', {});
+  notas = g('notas', {});
+  mediaAprovacao = g('mediaAprovacao', 6);
+  calendario = g('calendario', []);
+  comunicados = g('comunicados', []);
+  biblioteca = g('biblioteca', []);
+  perfilProfessora = g('perfilProfessora', { nome:'', mensagem:'Educação transforma hoje o amanhã.', foto:null });
+  if(turmas.length) turmaSelecionadaId = turmas[0].id;
+}
+function persistir(chave, valor){ try{ localStorage.setItem(chave, JSON.stringify(valor)); }catch(e){} }
+
+/* ================= navegação ================= */
+function mudarAba(nome){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+nome).classList.add('active');
+  document.querySelectorAll('.tabbar .tab').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.tabbar button[data-view="${nome}"]`).classList.add('active');
+  document.getElementById('fab').style.display = (nome==='plano') ? 'block' : 'none';
+  window.scrollTo(0,0);
+}
+function fecharModal(id){ document.getElementById(id).classList.remove('open'); }
+
+/* ================= configuração etapa/nível ================= */
+function atualizarNiveisConfig(){
+  const etapa = document.getElementById('cfg-etapa').value;
+  const sel = document.getElementById('cfg-nivel');
+  sel.innerHTML = ETAPAS[etapa].map(n=>`<option>${n}</option>`).join('');
+}
+function abrirModalConfig(){
+  document.getElementById('cfg-etapa').value = config.etapa;
+  atualizarNiveisConfig();
+  document.getElementById('cfg-nivel').value = config.nivel;
+  document.getElementById('modal-config').classList.add('open');
+}
+function salvarConfig(){
+  config = { etapa: document.getElementById('cfg-etapa').value, nivel: document.getElementById('cfg-nivel').value };
+  persistir('config', config);
+  fecharModal('modal-config');
+  aplicarConfigNaUI();
+}
+function aplicarConfigNaUI(){
+  const label = `🎓 ${config.etapa} · ${config.nivel}`;
+  document.getElementById('etapa-atual-label').textContent = label;
+  document.getElementById('etapa-atual-label-2').textContent = label;
+  preencherCampoModalPlano();
+  renderIdiomasChips();
+  atualizarVisibilidadeTabuada();
+  atualizarVisibilidadeProvas();
+  atualizarVisibilidadeLivros();
+  atualizarVisibilidadeTrabalhosDatas();
+  renderGrids();
+  atualizarIconeRecursos();
+}
+function atualizarIconeRecursos(){
+  const icones = {
+    'Educação Infantil': '🧸',
+    'Fundamental I': '📘',
+    'Fundamental II': '📗',
+    'Ensino Médio': '🎓',
+  };
+  const icone = icones[config.etapa] || '🧸';
+  const abaEl = document.getElementById('icone-aba-recursos');
+  const tituloEl = document.getElementById('icone-titulo-recursos');
+  if(abaEl) abaEl.textContent = icone;
+  if(tituloEl) tituloEl.textContent = icone;
+}
+
+/* ================= editar boas-vindas (nome, mensagem, foto) ================= */
+let perfilProfessora = { nome:'', mensagem:'Educação transforma hoje o amanhã.', foto:null };
+let fotoPerfilTemp = null;
+function aplicarPerfilNaUI(){
+  document.getElementById('perfil-nome').textContent = perfilProfessora.nome || 'Professor(a)';
+  document.getElementById('perfil-mensagem').textContent = perfilProfessora.mensagem;
+  const img = document.getElementById('perfil-foto-img');
+  const placeholder = document.getElementById('perfil-foto-placeholder');
+  if(perfilProfessora.foto){
+    img.src = perfilProfessora.foto;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    placeholder.style.display = 'flex';
+  }
+}
+function abrirModalPerfil(){
+  document.getElementById('fp-nome').value = perfilProfessora.nome;
+  document.getElementById('fp-mensagem').value = perfilProfessora.mensagem;
+  document.getElementById('fp-preview').innerHTML = '';
+  fotoPerfilTemp = null;
+  document.getElementById('modal-perfil').classList.add('open');
+}
+function preverFotoPerfil(event){
+  const arquivo = event.target.files[0];
+  if(!arquivo) return;
+  const leitor = new FileReader();
+  leitor.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const tam = 300;
+      const canvas = document.createElement('canvas');
+      canvas.width = tam; canvas.height = tam;
+      const ctx = canvas.getContext('2d');
+      const escala = Math.max(tam/img.width, tam/img.height);
+      const w = img.width*escala, h = img.height*escala;
+      ctx.drawImage(img, (tam-w)/2, (tam-h)/2, w, h);
+      fotoPerfilTemp = canvas.toDataURL('image/jpeg', 0.85);
+      document.getElementById('fp-preview').innerHTML = `<img src="${fotoPerfilTemp}" style="width:80px;height:80px;border-radius:50%;object-fit:cover">`;
+    };
+    img.src = e.target.result;
+  };
+  leitor.readAsDataURL(arquivo);
+}
+function salvarPerfil(){
+  perfilProfessora.nome = document.getElementById('fp-nome').value.trim() || 'Professor(a)';
+  perfilProfessora.mensagem = document.getElementById('fp-mensagem').value.trim() || 'Educação transforma hoje o amanhã.';
+  if(fotoPerfilTemp) perfilProfessora.foto = fotoPerfilTemp;
+  try{ persistir('perfilProfessora', perfilProfessora); }
+  catch(e){ alert('A foto pode ter ficado grande demais para salvar. Nome e mensagem foram salvos; tente uma foto menor.'); }
+  fecharModal('modal-perfil');
+  aplicarPerfilNaUI();
+}
+function ehInfantilOuFund1(){
+  return config.etapa === 'Educação Infantil' || config.etapa === 'Fundamental I';
+}
+function preencherCampoModalPlano(){
+  const label = document.getElementById('label-campo-bncc');
+  const sel = document.getElementById('f-campo');
+  if(config.etapa === 'Educação Infantil'){
+    label.textContent = 'Campo de experiência (BNCC)';
+    sel.innerHTML = CAMPOS_BNCC_INFANTIL.map(c=>`<option>${c}</option>`).join('');
+  } else {
+    label.textContent = 'Componente curricular';
+    sel.innerHTML = getComponentesAtuais().map(c=>`<option>${c}</option>`).join('');
+  }
+  renderSugestoesPlano();
+}
+function consultarSite(){
+  const campo = document.getElementById('f-campo').value;
+  const url = (config.etapa === 'Educação Infantil') ? SITE_INFANTIL : SITES_COMPONENTE[campo];
+  if(url){ window.open(url, '_blank'); }
+  else { buscar(campo); }
+}
+function renderSugestoesPlano(){
+  const campo = document.getElementById('f-campo').value;
+  const lista = (config.etapa === 'Educação Infantil') ? (SUGESTOES_INFANTIL[campo]||[]) : (SUGESTOES_COMPONENTE[campo]||[]);
+  const el = document.getElementById('sugestoes-chips');
+  if(lista.length === 0){ el.innerHTML = '<span style="font-size:12px;color:var(--muted)">Sem sugestões prontas para esta opção ainda.</span>'; return; }
+  el.innerHTML = lista.map((s,idx)=>`<button type="button" class="chip" onclick="aplicarSugestao(${idx})">${escapeHtml(s.tema)}</button>`).join('');
+  window._sugestoesAtuais = lista;
+}
+function aplicarSugestao(idx){
+  const s = window._sugestoesAtuais[idx]; if(!s) return;
+  document.getElementById('f-tema').value = s.tema;
+  document.getElementById('f-objetivo').value = s.objetivo;
+  document.getElementById('f-recursos').value = s.recursos;
+}
+
+/* ================= planejamento ================= */
+function abrirModalPlano(id){
+  editandoId = id || null;
+  preencherCampoModalPlano();
+  const p = id ? planos.find(x=>x.id===id) : null;
+  document.getElementById('modal-titulo').textContent = p ? 'Editar aula' : 'Nova aula';
+  document.getElementById('f-data').value = p ? p.data : '';
+  document.getElementById('f-turma').value = p ? p.turma : '';
+  document.getElementById('f-tema').value = p ? p.tema : '';
+  document.getElementById('f-objetivo').value = p ? p.objetivo : '';
+  document.getElementById('f-recursos').value = p ? p.recursos : '';
+  document.getElementById('f-duracao').value = p ? p.duracao : '';
+  document.getElementById('f-status').value = p ? p.status : 'Planejada';
+  document.getElementById('f-obs').value = p ? p.obs : '';
+  document.getElementById('lista-turmas').innerHTML = turmas.map(t=>`<option value="${escapeHtml(t.nome)}">`).join('');
+  if(p && p.campo) document.getElementById('f-campo').value = p.campo;
+  document.getElementById('modal-plano').classList.add('open');
+}
+function salvarPlano(){
+  const dados = {
+    data: document.getElementById('f-data').value,
+    turma: document.getElementById('f-turma').value.trim(),
+    tema: document.getElementById('f-tema').value.trim(),
+    campo: document.getElementById('f-campo').value,
+    objetivo: document.getElementById('f-objetivo').value.trim(),
+    recursos: document.getElementById('f-recursos').value.trim(),
+    duracao: document.getElementById('f-duracao').value,
+    status: document.getElementById('f-status').value,
+    obs: document.getElementById('f-obs').value.trim(),
+  };
+  if(!dados.tema){ alert('Preencha ao menos o tema da aula.'); return; }
+  if(editandoId){
+    const idx = planos.findIndex(x=>x.id===editandoId);
+    if(idx>-1) planos[idx] = {...planos[idx], ...dados};
+  } else {
+    planos.push({ id:'p'+Date.now(), ...dados });
+  }
+  persistir('planos', planos);
+  fecharModal('modal-plano');
+  renderTudo();
+}
+function excluirPlano(id){
+  if(!confirm('Excluir esta aula do planejamento?')) return;
+  planos = planos.filter(x=>x.id!==id);
+  persistir('planos', planos);
+  renderTudo();
+}
+function fmtData(iso){
+  if(!iso) return 'Sem data';
+  const [a,m,d] = iso.split('-');
+  return `${d}/${m}/${a}`;
+}
+function renderPlanoList(){
+  const el = document.getElementById('plano-list');
+  if(planos.length===0){ el.innerHTML = '<div class="empty">Nenhuma aula cadastrada ainda.<br>Toque no botão ＋ para adicionar.</div>'; return; }
+  const ordenados = [...planos].sort((a,b)=> (a.data||'9999').localeCompare(b.data||'9999'));
+  el.innerHTML = ordenados.map(p=>`
+    <div class="plan-item">
+      <div class="top">
+        <div><b>${escapeHtml(p.tema||'(sem tema)')}</b>
+          <div class="meta">${fmtData(p.data)} · ${escapeHtml(p.turma||'—')}${p.duracao?' · '+p.duracao+' min':''}</div>
+          ${p.campo?`<div class="meta">🧭 ${escapeHtml(p.campo)}</div>`:''}
+        </div>
+        <span class="badge st-${p.status}">${p.status}</span>
+      </div>
+      ${p.objetivo?`<div class="meta" style="margin-top:6px">🎯 ${escapeHtml(p.objetivo)}</div>`:''}
+      ${p.recursos?`<div class="meta">🧰 ${escapeHtml(p.recursos)}</div>`:''}
+      ${p.obs?`<div class="meta">📝 ${escapeHtml(p.obs)}</div>`:''}
+      <div class="actions">
+        <button onclick="abrirModalPlano('${p.id}')">✏️ Editar</button>
+        <button onclick="compartilharPlano('${p.id}')">📤 Compartilhar</button>
+        <button class="del" onclick="excluirPlano('${p.id}')">🗑️ Excluir</button>
+      </div>
+    </div>`).join('');
+}
+function compartilharPlano(id){
+  const p = planos.find(x=>x.id===id); if(!p) return;
+  const linhas = [
+    '📋 Plano de aula',
+    'Data: ' + fmtData(p.data),
+    'Turma: ' + (p.turma || '—'),
+    'Tema: ' + (p.tema || '—'),
+  ];
+  if(p.campo) linhas.push((config.etapa==='Educação Infantil' ? 'Campo de experiência: ' : 'Componente: ') + p.campo);
+  linhas.push('Objetivo: ' + (p.objetivo || '—'));
+  linhas.push('Recursos: ' + (p.recursos || '—'));
+  if(p.duracao) linhas.push('Duração: ' + p.duracao + ' min');
+  linhas.push('Status: ' + p.status);
+  if(p.obs) linhas.push('Observações: ' + p.obs);
+  const texto = linhas.join('\n');
+  if(navigator.share){
+    navigator.share({ title:'Plano de aula', text: texto }).catch(()=>{});
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+  }
+}
+function renderResumo(){
+  document.getElementById('st-planejadas').textContent = planos.length;
+  document.getElementById('st-realizadas').textContent = planos.filter(p=>p.status==='Realizada').length;
+  document.getElementById('st-pendentes').textContent = planos.filter(p=>p.status==='Planejada').length;
+  const hojeStr = new Date().toISOString().slice(0,10);
+  const proximas = planos.filter(p=>p.data && p.data>=hojeStr && p.status==='Planejada')
+                          .sort((a,b)=>a.data.localeCompare(b.data)).slice(0,3);
+  const el = document.getElementById('proximas-list');
+  el.innerHTML = proximas.length
+    ? proximas.map(p=>`<div class="plan-item"><div class="top"><b>${escapeHtml(p.tema)}</b><span class="badge st-${p.status}">${p.status}</span></div><div class="meta">${fmtData(p.data)} · ${escapeHtml(p.turma||'—')}</div></div>`).join('')
+    : '<div class="empty">Nenhuma aula planejada para os próximos dias.</div>';
+}
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ================= turmas / alunos / chamada / portfólio ================= */
+function renderTurmaTabs(){
+  const el = document.getElementById('turma-tabs');
+  const vazio = document.getElementById('turma-vazio');
+  const conteudo = document.getElementById('turma-conteudo');
+  if(turmas.length===0){ el.innerHTML=''; vazio.style.display='block'; conteudo.style.display='none'; return; }
+  vazio.style.display='none'; conteudo.style.display='block';
+  if(!turmas.find(t=>t.id===turmaSelecionadaId)) turmaSelecionadaId = turmas[0].id;
+  el.innerHTML = turmas.map(t=>`<button class="${t.id===turmaSelecionadaId?'active':''}" onclick="selecionarTurma('${t.id}')">${escapeHtml(t.nome)}</button>`).join('');
+  renderAlunos(); renderChamada(); renderPortfolio();
+  preencherSelectNotas(); renderListaNotas(); renderBoletim(); renderAniversariantes();
+}
+function selecionarTurma(id){ turmaSelecionadaId = id; renderTurmaTabs(); }
+function abrirModalTurma(){ document.getElementById('ft-nome').value=''; document.getElementById('modal-turma').classList.add('open'); }
+function salvarTurma(){
+  const nome = document.getElementById('ft-nome').value.trim();
+  if(!nome){ alert('Digite o nome da turma.'); return; }
+  const t = { id:'t'+Date.now(), nome, alunos:[] };
+  turmas.push(t); persistir('turmas', turmas);
+  turmaSelecionadaId = t.id;
+  fecharModal('modal-turma'); renderTurmaTabs();
+}
+function turmaAtual(){ return turmas.find(t=>t.id===turmaSelecionadaId); }
+
+/* ================= aniversariantes do dia ================= */
+function ehAniversarioHoje(aluno){
+  if(!aluno.nascimento) return false;
+  const hoje = new Date().toISOString().slice(5,10);
+  return aluno.nascimento.slice(5,10) === hoje;
+}
+function renderAniversariantes(){
+  const card = document.getElementById('card-aniversarios');
+  const lista = document.getElementById('aniversarios-lista');
+  if(!card || !lista) return;
+  const nomes = [];
+  turmas.forEach(t => t.alunos.forEach(a => { if(ehAniversarioHoje(a)) nomes.push(a.nome); }));
+  if(nomes.length === 0){ card.style.display = 'none'; return; }
+  card.style.display = 'block';
+  lista.textContent = nomes.length === 1
+    ? `Hoje é aniversário de ${nomes[0]}! 🎉`
+    : `Hoje é aniversário de ${nomes.slice(0,-1).join(', ')} e ${nomes[nomes.length-1]}! 🎉`;
+}
+
+let fotoAlunoTemp = null;
+function abrirModalAluno(){
+  document.getElementById('fa-nome').value='';
+  document.getElementById('fa-nascimento').value='';
+  document.getElementById('fa-foto-preview').innerHTML='';
+  fotoAlunoTemp = null;
+  document.getElementById('modal-aluno').classList.add('open');
+}
+function preverFotoAluno(event){
+  const arquivo = event.target.files[0];
+  if(!arquivo) return;
+  const leitor = new FileReader();
+  leitor.onload = function(e){
+    const img = new Image();
+    img.onload = function(){
+      const tam = 200;
+      const canvas = document.createElement('canvas');
+      canvas.width = tam; canvas.height = tam;
+      const ctx = canvas.getContext('2d');
+      const escala = Math.max(tam/img.width, tam/img.height);
+      const w = img.width*escala, h = img.height*escala;
+      ctx.drawImage(img, (tam-w)/2, (tam-h)/2, w, h);
+      fotoAlunoTemp = canvas.toDataURL('image/jpeg', 0.85);
+      document.getElementById('fa-foto-preview').innerHTML = `<img src="${fotoAlunoTemp}" style="width:64px;height:64px;border-radius:50%;object-fit:cover">`;
+    };
+    img.src = e.target.result;
+  };
+  leitor.readAsDataURL(arquivo);
+}
+function salvarAluno(){
+  const nome = document.getElementById('fa-nome').value.trim();
+  if(!nome){ alert('Digite o nome do aluno.'); return; }
+  const nascimento = document.getElementById('fa-nascimento').value || null;
+  const t = turmaAtual(); if(!t) return;
+  t.alunos.push({ id:'a'+Date.now(), nome, nascimento, foto: fotoAlunoTemp });
+  persistir('turmas', turmas);
+  fecharModal('modal-aluno'); renderAlunos(); renderChamada(); renderPortfolio(); renderListaNotas(); renderBoletim();
+  renderAniversariantes();
+}
+function excluirAluno(alunoId){
+  if(!confirm('Remover este aluno da turma?')) return;
+  const t = turmaAtual(); if(!t) return;
+  t.alunos = t.alunos.filter(a=>a.id!==alunoId);
+  persistir('turmas', turmas);
+  renderAlunos(); renderChamada(); renderPortfolio(); renderListaNotas(); renderBoletim();
+  renderAniversariantes();
+}
+function fmtDataCurta(iso){
+  if(!iso) return null;
+  const [a,m,d] = iso.split('-');
+  return `${d}/${m}`;
+}
+function avatarAluno(a, tamanho){
+  if(a.foto){
+    return `<img src="${a.foto}" style="width:${tamanho}px;height:${tamanho}px;border-radius:50%;object-fit:cover;flex:none">`;
+  }
+  return `<div style="width:${tamanho}px;height:${tamanho}px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:${Math.round(tamanho*0.5)}px;flex:none">🧒</div>`;
+}
+function renderAlunos(){
+  const t = turmaAtual(); const el = document.getElementById('alunos-list');
+  if(!t){ el.innerHTML=''; return; }
+  if(t.alunos.length===0){ el.innerHTML = '<div class="empty">Nenhum aluno cadastrado nesta turma.</div>'; return; }
+  el.innerHTML = t.alunos.map(a=>`
+    <div class="aluno-row">
+      <div style="display:flex;align-items:center;gap:10px">
+        ${avatarAluno(a,40)}
+        <div>
+          <div class="nome">${escapeHtml(a.nome)}${ehAniversarioHoje(a)?' 🎂':''}</div>
+          ${a.nascimento?`<div class="sub">Nascimento: ${fmtDataCurta(a.nascimento)}</div>`:''}
+        </div>
+      </div>
+      <div class="btns">
+        <button onclick="abrirModalPortfolio('${a.id}')">🗂️ Nota</button>
+        <button class="del" onclick="excluirAluno('${a.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderChamada(){
+  const t = turmaAtual(); const el = document.getElementById('chamada-list');
+  if(!t){ el.innerHTML=''; return; }
+  let dataEl = document.getElementById('chamada-data');
+  if(!dataEl.value) dataEl.value = new Date().toISOString().slice(0,10);
+  const data = dataEl.value;
+  if(t.alunos.length===0){ el.innerHTML = '<div class="empty">Cadastre alunos para fazer a chamada.</div>'; return; }
+  const chave = t.id+'_'+data;
+  const registro = chamadas[chave] || {};
+  const registroCor = acompanhamento[chave] || {};
+  const fotoGrande = config.etapa === 'Educação Infantil' ? 56 : 36;
+  el.innerHTML = t.alunos.map(a=>{
+    const cor = registroCor[a.id];
+    return `
+    <div class="aluno-row" style="flex-direction:column;align-items:stretch;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          ${avatarAluno(a, fotoGrande)}
+          <div class="nome" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(a.nome)}</div>
+        </div>
+        <div class="pill-toggle">
+          <button class="${registro[a.id]==='presente'?'on-presente':''}" onclick="marcarChamada('${a.id}','presente')">Presente</button>
+          <button class="${registro[a.id]==='falta'?'on-falta':''}" onclick="marcarChamada('${a.id}','falta')">Falta</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="sub">Como foi o dia:</span>
+        <div class="semaforo">
+          <button class="semaforo-btn ${cor==='verde'?'sel':''}" onclick="marcarAcompanhamento('${a.id}','verde')" title="Tudo bem">🟢</button>
+          <button class="semaforo-btn ${cor==='amarelo'?'sel':''}" onclick="marcarAcompanhamento('${a.id}','amarelo')" title="Atenção">🟡</button>
+          <button class="semaforo-btn ${cor==='vermelho'?'sel':''}" onclick="marcarAcompanhamento('${a.id}','vermelho')" title="Alerta">🔴</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function marcarChamada(alunoId, status){
+  const t = turmaAtual(); if(!t) return;
+  const data = document.getElementById('chamada-data').value;
+  const chave = t.id+'_'+data;
+  if(!chamadas[chave]) chamadas[chave] = {};
+  chamadas[chave][alunoId] = (chamadas[chave][alunoId]===status) ? undefined : status;
+  persistir('chamadas', chamadas);
+  renderChamada();
+}
+function marcarAcompanhamento(alunoId, cor){
+  const t = turmaAtual(); if(!t) return;
+  const data = document.getElementById('chamada-data').value;
+  const chave = t.id+'_'+data;
+  if(!acompanhamento[chave]) acompanhamento[chave] = {};
+  acompanhamento[chave][alunoId] = (acompanhamento[chave][alunoId]===cor) ? undefined : cor;
+  persistir('acompanhamento', acompanhamento);
+  renderChamada();
+}
+
+function abrirModalPortfolio(alunoId){
+  alunoPortfolioAtual = alunoId;
+  document.getElementById('fp-data').value = new Date().toISOString().slice(0,10);
+  document.getElementById('fp-texto').value = '';
+  const t = turmaAtual(); const aluno = t.alunos.find(a=>a.id===alunoId);
+  document.getElementById('portfolio-titulo').textContent = 'Nova observação — ' + (aluno? aluno.nome : '');
+  document.getElementById('modal-portfolio').classList.add('open');
+}
+function salvarPortfolio(){
+  const texto = document.getElementById('fp-texto').value.trim();
+  if(!texto){ alert('Escreva a observação.'); return; }
+  const data = document.getElementById('fp-data').value;
+  if(!portfolio[alunoPortfolioAtual]) portfolio[alunoPortfolioAtual] = [];
+  portfolio[alunoPortfolioAtual].push({ data, texto });
+  persistir('portfolio', portfolio);
+  fecharModal('modal-portfolio');
+  renderPortfolio();
+}
+function excluirNotaPortfolio(alunoId, idx){
+  portfolio[alunoId].splice(idx,1);
+  persistir('portfolio', portfolio);
+  renderPortfolio();
+}
+function renderPortfolio(){
+  const t = turmaAtual(); const el = document.getElementById('portfolio-list');
+  if(!t){ el.innerHTML=''; return; }
+  if(t.alunos.length===0){ el.innerHTML = '<div class="empty">Cadastre alunos para começar o portfólio.</div>'; return; }
+  el.innerHTML = t.alunos.map(a=>{
+    const notas = portfolio[a.id] || [];
+    return `<div style="margin-bottom:10px">
+      <b style="font-size:13px">${escapeHtml(a.nome)}</b>
+      ${notas.length===0 ? '<div class="meta">Nenhuma observação ainda.</div>' :
+        notas.map((n,idx)=>`<div class="plan-item" style="margin-top:6px">
+            <div class="meta">${fmtData(n.data)}</div>
+            <div style="font-size:13px;margin-top:3px">${escapeHtml(n.texto)}</div>
+            <div class="actions"><button class="del" onclick="excluirNotaPortfolio('${a.id}',${idx})">🗑️ Excluir</button></div>
+          </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+/* ================= atividades e recursos ================= */
+const atividades = [
+  ['at1','📋','Planejar aulas','Organize suas aulas', null, 'plano', null, ['todas']],
+  ['at2','🎨','Atividades prontas','Ideias rápidas por área', null, null, 'geral', ['todas']],
+  ['at3','🔤','Abecedário','ABC ilustrado', null, null, 'abecedario', ['infantil','fund1']],
+  ['at4','✏️','Letras e escrita','Atividades de linguagem', null, null, 'letras', ['infantil','fund1']],
+  ['at5','🔢','Números','Contagem e números', null, null, 'numeros', ['infantil','fund1']],
+  ['at6','🌈','Cores','Aprender brincando', null, null, 'cores', ['infantil']],
+  ['at7','🔵','Formas geométricas','Formas e encaixes', null, null, 'formas', ['infantil']],
+  ['at8','🎵','Músicas','Cantigas com link no YouTube', null, null, 'musicas', ['infantil','fund1']],
+  ['at13','📺','Vídeos','Buscar vídeos educativos', null, null, null, ['infantil','fund1'], 'abrirVideosEducativos'],
+  ['at9','🧩','Jogos educativos','Brincadeiras', null, null, 'jogos', ['infantil','fund1']],
+  ['at10','🖨️','Imprimir materiais','Folhas para atividades', null, null, null, ['todas'], 'imprimirMateriaisBase'],
+  ['at11','🎉','Datas especiais','Atividades temáticas', null, null, 'datas', ['todas']],
+  ['at12','🧮','Fórmulas rápidas','Matemática — 1ª a 3ª série', null, null, 'formulas_medio', ['medio']],
+  ['at14','🎭','Folclore Brasileiro','Lendas e personagens', null, null, 'folclore', ['infantil','fund1','fund2']],
+];
+const rapidas = [
+  ['rp1','🎨','Colorir','Ideias e dicas', null, null, 'colorir', ['infantil','fund1']],
+  ['rp2','🖍️','Desenhar','Ideias e dicas', null, null, 'desenhar', ['infantil','fund1']],
+  ['rp3','〰️','Traços','Coordenação motora', null, null, 'tracos', ['infantil','fund1']],
+  ['rp4','✂️','Recortar e colar','Ideias e dicas', null, null, 'recortar', ['infantil','fund1']],
+];
+const maisOpcoes = [
+  ['mo1','🪪','Crachás das crianças','Nome e turma', null, null, null, ['infantil'], 'imprimirCrachas'],
+  ['mo2','🏷️','Etiquetas com nomes','Para materiais e mesas', null, null, null, ['infantil','fund1'], 'imprimirEtiquetas'],
+  ['mo3','🖼️','Imagens e figuras','Materiais visuais', null, null, null, ['infantil','fund1'], 'imprimirFiguras'],
+  ['mo4','✂️','Recortes e moldes','Para atividades', null, null, null, ['infantil','fund1'], 'imprimirMoldes'],
+  ['mo5','⭐','Desenhos para colorir','Materiais infantis', null, null, null, ['infantil'], 'imprimirDesenhosColorir'],
+  ['mo6','🎂','Datas comemorativas','Atividades temáticas', null, null, 'datas', ['todas']],
+  ['mo7','📋','Listas e checklists','Organização', null, null, 'listas', ['todas']],
+  ['mo8','💡','Projetos temáticos','Ideias para a turma', null, null, 'projetos', ['todas']],
+];
+function nivelAtual(){
+  if(config.etapa === 'Educação Infantil') return 'infantil';
+  if(config.etapa === 'Fundamental I') return 'fund1';
+  if(config.etapa === 'Fundamental II') return 'fund2';
+  if(config.etapa === 'Ensino Médio') return 'medio';
+  return 'infantil';
+}
+function itemVisivelNaEtapa(item){
+  const niveis = item[7];
+  if(!niveis || niveis.includes('todas')) return true;
+  return niveis.includes(nivelAtual());
+}
+
+/* conteúdo pronto, sem precisar sair do app */
+const CONTEUDOS = {
+  folclore: { titulo:'🎭 Folclore Brasileiro', tipo:'dupla', dados:[
+    { t:'Boi Bumbá (Festival de Parintins)', d:'Tradição amazônica com as cores Garantido (vermelho) e Caprichoso (azul), músicas, danças e a lenda da morte e ressureição do boi.' },
+    { t:'Curupira', d:'Protetor da floresta, menino com cabelos de fogo e os pés virados para trás, que confunde quem quer destruir a mata.' },
+    { t:'Saci-Pererê', d:'Menino de uma perna só, cachimbo e gorro vermelho, conhecido por suas travessuras e por sumir em rodamoinhos de vento.' },
+    { t:'Iara', d:'A "mãe-d\'água", sereia dos rios brasileiros que encanta com seu canto quem passa perto da água.' },
+    { t:'Boitatá', d:'Cobra de fogo que protege as florestas e os animais, castigando quem provoca queimadas.' },
+    { t:'Cuca', d:'Bruxa com corpo de jacaré, conhecida das cantigas de ninar, que aparece para as crianças que não querem dormir.' },
+    { t:'Mula sem Cabeça', d:'Mulher amaldiçoada que se transforma em mula soltando fogo pelo pescoço em certas noites.' },
+    { t:'Lobisomem', d:'Homem que se transforma em lobo nas noites de lua cheia, uma das lendas mais conhecidas do Brasil.' },
+    { t:'Negrinho do Pastoreio', d:'Lenda gaúcha de um menino que, mesmo maltratado, ajuda quem perde animais no campo.' },
+    { t:'Boto Cor-de-Rosa', d:'Golfinho da Amazônia que, segundo a lenda, vira um rapaz bonito para dançar nas festas à beira do rio.' },
+  ]},
+  formulas_medio: { titulo:'🧮 Fórmulas rápidas — Matemática', tipo:'dupla', dados:[] },
+  colorir: { titulo:'🎨 Colorir — ideias e dicas', tipo:'simples', dados:[
+    'Desenhos simples de animais para colorir com giz de cera ou lápis de cor',
+    'Mandalas simples para trabalhar concentração e calma',
+    'Colorir por número: cada número no desenho indica uma cor a usar',
+    'Pintura com cotonete e tinta guache, pontilhando o desenho',
+    'Colorir usando apenas cores quentes ou só cores frias, para observar a diferença',
+  ]},
+  desenhar: { titulo:'🖍️ Desenhar — ideias e dicas', tipo:'simples', dados:[
+    'Desenho livre com giz de cera em papel kraft grande',
+    'Desenho dirigido: a professora começa um traço e a criança completa o desenho',
+    'Desenho coletivo em papel grande no chão, todos desenhando juntos',
+    'Autorretrato simples, olhando um espelho',
+    'Desenhar ao som de uma música, deixando a mão seguir o ritmo',
+  ]},
+  tracos: { titulo:'〰️ Traços — coordenação motora', tipo:'simples', dados:[
+    'Traçado de linhas retas entre dois pontos marcados no papel',
+    'Traçado de linhas onduladas, como ondas do mar',
+    'Traçado em espiral, de fora para dentro',
+    'Ligar os pontinhos numerados até formar um desenho',
+    'Traçado livre na areia, sal ou farinha antes de ir para o papel',
+  ]},
+  recortar: { titulo:'✂️ Recortar e colar — ideias e dicas', tipo:'simples', dados:[
+    'Recorte livre de revistas para montar uma colagem temática',
+    'Recorte de tiras de papel colorido para colar formando um trenzinho',
+    'Colagem com bolinhas de papel crepom amassado',
+    'Recortar e colar formas geométricas para montar a figura de um bicho',
+    'Recorte de figuras para montar um cartaz coletivo da turma',
+  ]},
+  geral: { titulo:'🎨 Atividades prontas por área', tipo:'dupla', dados:[
+    { t:'Motora fina', d:'Rasgar papel colorido e colar formando um mosaico livre.' },
+    { t:'Motora ampla', d:'Circuito com almofadas, bambolês e cones para pular e engatinhar.' },
+    { t:'Linguagem', d:'Roda de história com fantoches, seguida de perguntas sobre o enredo.' },
+    { t:'Lógico-matemático', d:'Classificar objetos por tamanho, cor ou forma em potes separados.' },
+    { t:'Socioemocional', d:'Roda de conversa com cartões de emoções para nomear sentimentos.' },
+  ]},
+  abecedario: { titulo:'🔤 Abecedário ilustrado', tipo:'simples', dados:[
+    'A de Abelha 🐝','B de Bola ⚽','C de Casa 🏠','D de Dado 🎲','E de Estrela ⭐',
+    'F de Foca 🦭','G de Gato 🐱','H de Helicóptero 🚁','I de Igreja ⛪','J de Jacaré 🐊',
+    'K de Kiwi 🥝','L de Lua 🌙','M de Maçã 🍎','N de Navio 🚢','O de Ovo 🥚',
+    'P de Pato 🦆','Q de Queijo 🧀','R de Rato 🐭','S de Sol ☀️','T de Tartaruga 🐢',
+    'U de Uva 🍇','V de Vaca 🐮','W de Wi-Fi 📶','X de Xícara ☕','Y de Yoyo 🪀','Z de Zebra 🦓'
+  ]},
+  letras: { titulo:'✏️ Letras e escrita — ideias', tipo:'simples', dados:[
+    'Traçado das letras com o dedo na areia, sal ou farinha em uma bandeja',
+    'Caça-letras: encontrar pela sala objetos que comecem com a letra do dia',
+    'Alfabeto móvel: montar palavras simples com letras soltas de EVA',
+    'Ditado de desenhos: a professora fala a letra e a criança desenha algo que comece com ela',
+    'Massinha de modelar para formar o contorno das letras',
+  ]},
+  numeros: { titulo:'🔢 Números — ideias de atividade', tipo:'simples', dados:[
+    '1 🍎 — Uma maçã sozinha no prato',
+    '2 🐥🐥 — Dois pintinhos pulando',
+    '3 🎈🎈🎈 — Três balões na mão',
+    '4 🐾🐾🐾🐾 — Quatro patinhas do cachorro',
+    '5 🖐️ — Cinco dedos da mão',
+    '6 🍪🍪🍪🍪🍪🍪 — Seis biscoitos na bandeja',
+    '7 🌈 — As sete cores do arco-íris',
+    '8 🕷️ — As oito patas da aranha',
+    '9 ⚽ — Nove bolas no cesto',
+    '10 🔟 — Dez dedos das duas mãos',
+  ]},
+  cores: { titulo:'🌈 Cores — ideias de atividade', tipo:'simples', dados:[
+    'Caça-cores: encontrar pela sala objetos da cor combinada',
+    'Pintura com os dedos usando tinta atóxica em papel kraft',
+    'Classificação de blocos ou brinquedos por cor em potes separados',
+    'Mistura mágica: misturar duas cores primárias e descobrir a cor nova',
+    'Varal de cores: pendurar tecidos coloridos e nomear cada um',
+  ]},
+  formas: { titulo:'🔵 Formas geométricas', tipo:'simples', dados:[
+    'Círculo ⭕ — como uma bola, um prato, o sol',
+    'Quadrado ⬛ — como uma janela, uma caixa de presente',
+    'Triângulo 🔺 — como um chapéu de festa, uma fatia de pizza',
+    'Retângulo ▬ — como uma porta, um livro',
+    'Estrela ⭐ — como as que aparecem no céu à noite',
+    'Coração ❤️ — símbolo de carinho e amizade',
+  ]},
+  musicas: { titulo:'🎵 Músicas infantis clássicas', tipo:'dupla', dados:[
+    { t:'Atirei o Pau no Gato', d:'Cantiga de roda clássica, boa para memorização.' },
+    { t:'Ciranda Cirandinha', d:'Roda e movimento circular com os colegas.' },
+    { t:'Borboletinha', d:'Trabalha coordenação motora e ritmo.' },
+    { t:'O Sapo Não Lava o Pé', d:'Fala sobre higiene de um jeito divertido.' },
+    { t:'A Canoa Virou', d:'Ajuda a memorizar o nome dos coleguinhas.' },
+    { t:'Escravos de Jó', d:'Coordenação motora fina passando o objeto adiante.' },
+  ]},
+  jogos: { titulo:'🧩 Jogos educativos', tipo:'dupla', dados:[
+    { t:'Boliche de garrafas PET', d:'Enfileire garrafas e jogue uma bolinha para derrubá-las — trabalha pontaria e contagem.' },
+    { t:'Caça ao tesouro sensorial', d:'Esconda objetos de texturas diferentes para encontrar pelo tato.' },
+    { t:'Twister das cores', d:'Desenhe círculos coloridos no chão com giz e peça para pisar na cor sorteada.' },
+    { t:'Memória gigante', d:'Cartões grandes emparelhados no chão trabalham memória e concentração.' },
+  ]},
+  datas: { titulo:'🎉 Calendário de datas comemorativas', tipo:'calendario', dados:[
+    { m:'Fevereiro', t:'Carnaval', i:'Confecção de máscaras e desfile na sala' },
+    { m:'Fevereiro', t:'Dia do Livro Didático (27/02)', i:'Roda de leitura com os livros didáticos e paradidáticos da turma' },
+    { m:'Março', t:'Dia da Mulher (08/03)', i:'Roda de conversa sobre mulheres importantes da família' },
+    { m:'Março', t:'Dia da Poesia (14/03)', i:'Sarau de poesias com produções dos próprios alunos' },
+    { m:'Março', t:'Dia Mundial da Água (22/03)', i:'Atividade sobre a importância da água e como economizá-la' },
+    { m:'Abril', t:'Dia do Livro Infantil (18/04)', i:'Roda de leitura com um livro infantil clássico' },
+    { m:'Abril', t:'Dia do Índio (19/04)', i:'Atividade sobre a cultura dos povos indígenas' },
+    { m:'Abril', t:'Tiradentes (21/04)', i:'Atividade sobre a Inconfidência Mineira e o valor da liberdade' },
+    { m:'Abril', t:'Páscoa', i:'Confecção de coelhinho de papel' },
+    { m:'Maio', t:'Dia do Trabalho (01/05)', i:'Conversa sobre profissões e o valor do trabalho' },
+    { m:'Maio', t:'Abolição da Escravatura (13/05)', i:'Atividade sobre a história da abolição e seus reflexos até hoje' },
+    { m:'Maio', t:'Dia das Mães', i:'Confecção de cartão ou lembrancinha para a mãe' },
+    { m:'Junho', t:'Dia Mundial do Meio Ambiente (05/06)', i:'Atividade sobre reciclagem e cuidado com a natureza' },
+    { m:'Junho', t:'Festa Junina / São João (24/06)', i:'Decoração, comidas típicas e danças' },
+    { m:'Junho', t:'Boi Bumbá (Festival de Parintins)', i:'Atividade sobre a tradição do boi-bumbá, as cores Garantido e Caprichoso, e a cultura amazônica' },
+    { m:'Julho', t:'Dia do Amigo (20/07)', i:'Dinâmica sobre amizade e respeito entre colegas' },
+    { m:'Agosto', t:'Dia dos Pais', i:'Confecção de cartão ou lembrancinha para o pai' },
+    { m:'Agosto', t:'Dia do Estudante (11/08)', i:'Roda de conversa sobre o valor de estudar' },
+    { m:'Agosto', t:'Aniversário de Tatuí (11/08)', i:'Atividade sobre a história e as tradições da cidade' },
+    { m:'Agosto', t:'Dia do Folclore Brasileiro (22/08)', i:'Contação de lendas do folclore (Curupira, Saci, Iara)' },
+    { m:'Setembro', t:'Independência do Brasil (07/09)', i:'Atividade sobre os símbolos nacionais' },
+    { m:'Setembro', t:'Dia da Árvore (21/09)', i:'Plantio simbólico ou desenho sobre preservação ambiental' },
+    { m:'Outubro', t:'Dia das Crianças (12/10)', i:'Gincana e brincadeiras dirigidas' },
+    { m:'Outubro', t:'Dia do Professor (15/10)', i:'Homenagem e cartaz de agradecimento aos professores' },
+    { m:'Novembro', t:'Proclamação da República (15/11)', i:'Atividade sobre a mudança de Império para República no Brasil' },
+    { m:'Novembro', t:'Dia da Bandeira (19/11)', i:'Atividade sobre a história e os símbolos da bandeira nacional' },
+    { m:'Novembro', t:'Consciência Negra (20/11)', i:'Atividade sobre a cultura afro-brasileira' },
+    { m:'Dezembro', t:'Dia Nacional do Samba (02/12)', i:'Roda de música com samba e cultura brasileira' },
+    { m:'Dezembro', t:'Padroeira de Tatuí — N. Sra. da Conceição (08/12)', i:'Conversa sobre a história e as tradições da Festa da Padroeira' },
+    { m:'Dezembro', t:'Natal', i:'Confecção de enfeites natalinos com sucata' },
+  ]},
+  listas: { titulo:'📋 Listas prontas', tipo:'dupla', dados:[
+    { t:'Materiais para o início do ano', d:'Tesoura sem ponta, cola bastão, lápis de cor, giz de cera, papel sulfite, papel color set, massinha, avental para pintura.' },
+    { t:'Checklist diário da professora', d:'Chamada feita · Atividade do dia preparada · Materiais separados · Recados aos pais enviados · Sala organizada ao final do dia.' },
+  ]},
+  projetos: { titulo:'💡 Projetos temáticos', tipo:'dupla', dados:[
+    { t:'Projeto Horta na Escola', d:'Trabalha ciências naturais, responsabilidade e alimentação saudável. Atividades: plantar sementes em copinhos, criar um diário de observação do crescimento, provar e conhecer os alimentos colhidos.' },
+    { t:'Projeto Reciclagem', d:'Consciência ambiental através da separação de materiais recicláveis. Atividades: montar lixeiras coloridas por tipo de material, criar brinquedos com sucata, roda de conversa sobre o caminho do lixo.' },
+    { t:'Projeto Cultura Afro-Brasileira', d:'Histórias, músicas e danças de matriz africana. Atividades: contação de histórias africanas, roda de tambores, confecção de bonecas Abayomi, exposição de imagens sobre a cultura afro-brasileira.' },
+    { t:'Projeto Corpo Humano', d:'Exploração das partes do corpo e cuidados com a saúde. Atividades: desenhar o contorno do próprio corpo em papel kraft, jogo de nomear as partes do corpo, conversa sobre higiene e alimentação saudável.' },
+    { t:'Projeto Profissões', d:'Conhecer diferentes profissões através de brincadeiras de faz de conta. Atividades: dia da fantasia de profissões, cantinho do "faz de conta" com objetos de cada ofício, entrevista simples com familiares sobre o trabalho deles.' },
+  ]},
+};
+
+function abrirRecurso(termo, aba, conteudoId, acaoDireta){
+  if(acaoDireta && typeof window[acaoDireta] === 'function'){ window[acaoDireta](); return; }
+  if(conteudoId){ abrirModalConteudo(conteudoId); return; }
+  if(aba){ mudarAba(aba); return; }
+  buscar(termo);
+}
+function abrirModalConteudo(id){
+  if(id === 'formulas_medio') atualizarConteudoFormulas();
+  const c = CONTEUDOS[id]; if(!c) return;
+  conteudoAtualId = id;
+  document.getElementById('conteudo-titulo').textContent = c.titulo;
+  let html = '';
+  if(c.tipo === 'simples'){
+    html = '<div>' + c.dados.map(item => `<div class="plan-item" style="padding:10px 12px">${escapeHtml(item)}</div>`).join('') + '</div>';
+    if(id === 'formas'){
+      html += `<button type="button" onclick="imprimirMoldes()" style="margin-top:10px;width:100%;border:0;border-radius:11px;padding:12px;background:var(--green);color:var(--green-text);font-weight:bold">🖨️ Imprimir formas prontas</button>`;
+    }
+    if(id === 'tracos'){
+      html += `<button type="button" onclick="imprimirTracos()" style="margin-top:10px;width:100%;border:0;border-radius:11px;padding:12px;background:var(--green);color:var(--green-text);font-weight:bold">🖨️ Imprimir folha de traçados</button>`;
+    }
+  } else if(c.tipo === 'dupla'){
+    html = c.dados.map(item => {
+      let extra = '';
+      if(id === 'musicas'){
+        const busca = encodeURIComponent(item.t + ' música infantil');
+        extra = `<div class="actions" style="margin-top:8px"><button onclick="window.open('https://www.youtube.com/results?search_query=${busca}','_blank')">▶️ Ver no YouTube</button></div>`;
+      }
+      return `<div class="plan-item"><b style="font-size:13px">${escapeHtml(item.t)}</b><div class="meta" style="margin-top:4px">${escapeHtml(item.d)}</div>${extra}</div>`;
+    }).join('');
+    if(id === 'formulas_medio'){
+      const nivel = config.nivel;
+      const exercicios = EXERCICIOS_FORMULAS[nivel] || [...EXERCICIOS_FORMULAS['1ª série'], ...EXERCICIOS_FORMULAS['2ª série'], ...EXERCICIOS_FORMULAS['3ª série']];
+      html += `<h3 style="font-size:14px;margin:16px 0 8px">📝 Exercícios rápidos</h3>` +
+        exercicios.map((e,i) => `<div class="plan-item">${i+1}. ${escapeHtml(e.pergunta)}</div>`).join('') +
+        `<button type="button" onclick="acessarGabarito('formulas')" style="margin-top:10px;width:100%;border:0;border-radius:11px;padding:12px;background:var(--green);color:var(--green-text);font-weight:bold">🔒 Ver respostas</button>`;
+    }
+  } else if(c.tipo === 'calendario'){
+    html = c.dados.map((item,i) => `<div class="plan-item"><div class="top"><b>${escapeHtml(item.t)}</b><span class="badge st-Planejada">${escapeHtml(item.m)}</span></div><div class="meta" style="margin-top:4px">${escapeHtml(item.i)}</div><div class="actions" style="margin-top:8px"><button onclick="imprimirAtividadeCalendario(${i})">🖨️ Imprimir atividade</button></div></div>`).join('');
+  }
+  document.getElementById('conteudo-corpo').innerHTML = html;
+  document.getElementById('modal-conteudo').classList.add('open');
+}
+function imprimirAtividadeCalendario(indice){
+  const item = CONTEUDOS.datas.dados[indice];
+  if(!item) return;
+  const infantil = config.etapa === 'Educação Infantil';
+  const corpoExtra = infantil
+    ? '<div style="border:2px solid #333;border-radius:8px;height:230px;margin-top:18px"></div>'
+    : Array.from({length:8}).map(()=>'<div style="border-bottom:1px solid #999;height:30px;margin-top:6px"></div>').join('');
+  const corpo = `
+    <h1>🎉 ${escapeHtml(item.t)}</h1>
+    <div style="border-bottom:1px solid #999;padding-bottom:10px;margin-bottom:14px;font-size:13px;line-height:1.9">Nome: _______________________________________<br>Turma: ______________&nbsp;&nbsp;&nbsp; Data: ___/___/______</div>
+    <p style="font-size:15px;margin:10px 0">${escapeHtml(item.i)}</p>
+    ${corpoExtra}`;
+  novaJanelaImpressao(item.t, corpo);
+}
+
+/* ================= biblioteca de favoritos ================= */
+function textoConteudo(id){
+  const c = CONTEUDOS[id]; if(!c) return '';
+  const linhas = [c.titulo, ''];
+  if(c.tipo === 'simples'){
+    c.dados.forEach(item => linhas.push('• ' + item));
+  } else if(c.tipo === 'dupla'){
+    c.dados.forEach(item => { linhas.push('• ' + item.t); linhas.push('  ' + item.d); });
+  } else if(c.tipo === 'calendario'){
+    c.dados.forEach(item => { linhas.push(item.t + ' — ' + item.m); linhas.push('  ' + item.i); });
+  }
+  return linhas.join('\n');
+}
+function favoritarConteudo(){
+  if(!conteudoAtualId) return;
+  if(biblioteca.some(b => b.conteudoId === conteudoAtualId)){ alert('Esse conteúdo já está na sua biblioteca.'); return; }
+  const c = CONTEUDOS[conteudoAtualId];
+  biblioteca.push({ id:'b'+Date.now(), conteudoId: conteudoAtualId, titulo: c.titulo });
+  persistir('biblioteca', biblioteca);
+  renderBiblioteca();
+  alert('⭐ Adicionado à sua biblioteca!');
+}
+function removerDaBiblioteca(id){
+  biblioteca = biblioteca.filter(b => b.id !== id);
+  persistir('biblioteca', biblioteca);
+  renderBiblioteca();
+}
+function toolbarImpressao(){
+  return '<div class="toolbar-nao-imprime"><button onclick="window.close()">← Voltar</button><button onclick="window.print()">🖨️ Imprimir</button></div>';
+}
+function estiloToolbarImpressao(){
+  return '.toolbar-nao-imprime{margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #ddd;display:flex;gap:10px}.toolbar-nao-imprime button{border:0;border-radius:8px;padding:9px 16px;font-size:14px;cursor:pointer;font-weight:bold}.toolbar-nao-imprime button:first-child{border:1px solid #999;background:#fff;color:#111}.toolbar-nao-imprime button:last-child{background:#315de8;color:#fff}@media print{.toolbar-nao-imprime{display:none}}';
+}
+function imprimirConteudo(conteudoId){
+  const c = CONTEUDOS[conteudoId]; if(!c) return;
+  let corpo = '';
+  if(c.tipo === 'simples'){
+    corpo = c.dados.map(item => `<p style="margin:6px 0;font-size:14px">• ${escapeHtml(item)}</p>`).join('');
+  } else if(c.tipo === 'dupla'){
+    corpo = c.dados.map(item => `<p style="margin:12px 0 2px;font-size:14px"><b>${escapeHtml(item.t)}</b></p><p style="margin:0 0 0 14px;font-size:13px">${escapeHtml(item.d)}</p>`).join('');
+  } else if(c.tipo === 'calendario'){
+    corpo = c.dados.map(item => `<p style="margin:12px 0 2px;font-size:14px"><b>${escapeHtml(item.t)}</b> — ${escapeHtml(item.m)}</p><p style="margin:0 0 0 14px;font-size:13px">${escapeHtml(item.i)}</p>`).join('');
+  }
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${c.titulo}</title>
+    <style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111} h1{font-size:19px;margin:0 0 14px} ${estiloToolbarImpressao()}</style></head>
+    <body>${toolbarImpressao()}<h1>${c.titulo}</h1>${corpo}</body></html>`;
+  const janela = window.open('', '_blank');
+  if(!janela){ alert('Permita pop-ups no navegador para imprimir.'); return; }
+  janela.document.open(); janela.document.write(html); janela.document.close(); janela.focus();
+  setTimeout(()=>{ try{ janela.print(); }catch(e){} }, 350);
+}
+function baixarConteudo(conteudoId){
+  const c = CONTEUDOS[conteudoId]; if(!c) return;
+  const texto = textoConteudo(conteudoId);
+  const blob = new Blob([texto], { type:'text/plain' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = c.titulo.replace(/[^\w\sÀ-ÿ]/g,'').trim().replace(/\s+/g,'_') + '.txt';
+  link.click();
+}
+function compartilharConteudo(conteudoId){
+  const c = CONTEUDOS[conteudoId]; if(!c) return;
+  const texto = textoConteudo(conteudoId);
+  if(navigator.share){ navigator.share({ title: c.titulo, text: texto }).catch(()=>{}); }
+  else { window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank'); }
+}
+function renderBiblioteca(){
+  const el = document.getElementById('biblioteca-lista');
+  if(!el) return;
+  if(biblioteca.length === 0){
+    el.innerHTML = '<div class="empty">Nada favoritado ainda. Abra um conteúdo pronto em "Atividades e Recursos" e toque em ⭐ Favoritar.</div>';
+    return;
+  }
+  el.innerHTML = biblioteca.map(item => `
+    <div class="plan-item">
+      <b style="font-size:13px;cursor:pointer" onclick="abrirModalConteudo('${item.conteudoId}')">${escapeHtml(item.titulo)}</b>
+      <div class="actions" style="margin-top:8px">
+        <button onclick="imprimirConteudo('${item.conteudoId}')">🖨️ Imprimir</button>
+        <button onclick="baixarConteudo('${item.conteudoId}')">💾 Salvar</button>
+        <button onclick="compartilharConteudo('${item.conteudoId}')">📤 Compartilhar</button>
+        <button class="del" onclick="removerDaBiblioteca('${item.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+function montarCardRecurso(item){
+  const [id,icon,nome,desc,termo,aba,conteudoId,niveis,acaoDireta] = item;
+  const args = [termo?`'${termo}'`:'null', aba?`'${aba}'`:'null', conteudoId?`'${conteudoId}'`:'null', acaoDireta?`'${acaoDireta}'`:'null'].join(',');
+  return `<button class="quick-open-full" onclick="abrirRecurso(${args})">${icon} <b>${nome}</b><small>${desc}</small></button>`;
+}
+function renderGrids(){
+  document.getElementById('atividades-grid').innerHTML = atividades.filter(itemVisivelNaEtapa).map(montarCardRecurso).join('');
+  document.getElementById('rapidas-grid').innerHTML = rapidas.filter(itemVisivelNaEtapa).map(montarCardRecurso).join('');
+  document.getElementById('mais-grid').innerHTML = maisOpcoes.filter(itemVisivelNaEtapa).map(montarCardRecurso).join('');
+}
+
+
+
+/* ================= aprender: idiomas por categoria ================= */
+/* cada linha: [emoji, português, inglês, italiano, espanhol] */
+const CATEGORIAS_IDIOMA = {
+  cores: { nome:'🎨 Cores', dados:[["🔴","Vermelho","Red","Rosso","Rojo"],["🔵","Azul","Blue","Blu","Azul"],["🟡","Amarelo","Yellow","Giallo","Amarillo"],["🟢","Verde","Green","Verde","Verde"],["🟠","Laranja","Orange","Arancione","Naranja"],["🟣","Roxo","Purple","Viola","Morado"],["⚫","Preto","Black","Nero","Negro"],["⚪","Branco","White","Bianco","Blanco"]] },
+  numeros: { nome:'🔢 Números', dados:[["1️⃣","Um","One","Uno","Uno"],["2️⃣","Dois","Two","Due","Dos"],["3️⃣","Três","Three","Tre","Tres"],["4️⃣","Quatro","Four","Quattro","Cuatro"],["5️⃣","Cinco","Five","Cinque","Cinco"],["6️⃣","Seis","Six","Sei","Seis"],["7️⃣","Sete","Seven","Sette","Siete"],["8️⃣","Oito","Eight","Otto","Ocho"],["9️⃣","Nove","Nine","Nove","Nueve"],["🔟","Dez","Ten","Dieci","Diez"]] },
+  animais: { nome:'🐶 Animais', dados:[["🐶","Cachorro","Dog","Cane","Perro"],["🐱","Gato","Cat","Gatto","Gato"],["🐘","Elefante","Elephant","Elefante","Elefante"],["🦁","Leão","Lion","Leone","León"],["🐦","Pássaro","Bird","Uccello","Pájaro"],["🐟","Peixe","Fish","Pesce","Pez"],["🐰","Coelho","Rabbit","Coniglio","Conejo"],["🐮","Vaca","Cow","Mucca","Vaca"]] },
+  cumprimentos: { nome:'👋 Cumprimentos', dados:[["🌅","Bom dia","Good morning","Buongiorno","Buenos días"],["🌤️","Boa tarde","Good afternoon","Buon pomeriggio","Buenas tardes"],["🌙","Boa noite","Good night","Buonanotte","Buenas noches"],["👋","Tchau","Bye","Ciao","Adiós"],["🙏","Por favor","Please","Per favore","Por favor"],["😊","Obrigado(a)","Thank you","Grazie","Gracias"]] },
+  formas: { nome:'🔷 Formas', dados:[["⭕","Círculo","Circle","Cerchio","Círculo"],["🟥","Quadrado","Square","Quadrato","Cuadrado"],["🔺","Triângulo","Triangle","Triangolo","Triángulo"],["🟦","Retângulo","Rectangle","Rettangolo","Rectángulo"],["⭐","Estrela","Star","Stella","Estrella"],["❤️","Coração","Heart","Cuore","Corazón"]] },
+  dias: { nome:'📅 Dias da semana', dados:[["1","Segunda-feira","Monday","Lunedì","Lunes"],["2","Terça-feira","Tuesday","Martedì","Martes"],["3","Quarta-feira","Wednesday","Mercoledì","Miércoles"],["4","Quinta-feira","Thursday","Giovedì","Jueves"],["5","Sexta-feira","Friday","Venerdì","Viernes"],["6","Sábado","Saturday","Sabato","Sábado"],["7","Domingo","Sunday","Domenica","Domingo"]] },
+  sentimentos: { nome:'😊 Sentimentos', dados:[["😄","Feliz","Happy","Felice","Feliz"],["😢","Triste","Sad","Triste","Triste"],["😡","Bravo","Angry","Arrabbiato","Enojado"],["😴","Com sono","Sleepy","Assonnato","Con sueño"],["😨","Com medo","Scared","Spaventato","Con miedo"],["😲","Surpreso","Surprised","Sorpreso","Sorprendido"]] },
+  corpo: { nome:'🧍 Partes do corpo', dados:[["👋","Mão","Hand","Mano","Mano"],["🦶","Pé","Foot","Piede","Pie"],["👀","Olhos","Eyes","Occhi","Ojos"],["👃","Nariz","Nose","Naso","Nariz"],["👂","Orelha","Ear","Orecchio","Oreja"],["👄","Boca","Mouth","Bocca","Boca"]] },
+  familia: { nome:'👪 Família', dados:[["👩","Mãe","Mother","Madre","Madre"],["👨","Pai","Father","Padre","Padre"],["👧","Irmã","Sister","Sorella","Hermana"],["👦","Irmão","Brother","Fratello","Hermano"],["👵","Avó","Grandmother","Nonna","Abuela"],["👴","Avô","Grandfather","Nonno","Abuelo"]] },
+  frutas: { nome:'🍎 Frutas', dados:[["🍎","Maçã","Apple","Mela","Manzana"],["🍌","Banana","Banana","Banana","Plátano"],["🍇","Uva","Grape","Uva","Uva"],["🍊","Laranja","Orange","Arancia","Naranja"],["🍓","Morango","Strawberry","Fragola","Fresa"],["🍍","Abacaxi","Pineapple","Ananas","Piña"]] },
+  paises: { nome:'🌎 Países', dados:[["🇧🇷","Brasil","Brazil","Brasile","Brasil"],["🇺🇸","Estados Unidos","United States","Stati Uniti","Estados Unidos"],["🇪🇸","Espanha","Spain","Spagna","España"],["🇮🇹","Itália","Italy","Italia","Italia"],["🇦🇷","Argentina","Argentina","Argentina","Argentina"],["🇫🇷","França","France","Francia","Francia"],["🇵🇹","Portugal","Portugal","Portogallo","Portugal"],["🇩🇪","Alemanha","Germany","Germania","Alemania"],["🇯🇵","Japão","Japan","Giappone","Japón"],["🇨🇳","China","China","Cina","China"]] },
+};
+let categoriaIdiomaAtual = 'cores';
+function renderIdiomasChips(){
+  const el = document.getElementById('idiomas-chips');
+  el.innerHTML = Object.keys(CATEGORIAS_IDIOMA).map(k=>
+    `<button class="chip ${k===categoriaIdiomaAtual?'active':''}" onclick="selecionarCategoriaIdioma('${k}')">${CATEGORIAS_IDIOMA[k].nome}</button>`).join('');
+}
+function selecionarCategoriaIdioma(k){ categoriaIdiomaAtual = k; renderIdiomasChips(); mostrarIdioma(idiomaAtual); }
+let idiomaAtual = 'ingles';
+const LANG_CODES = { ingles:'en-US', italiano:'it-IT', espanhol:'es-ES' };
+function falar(palavra,idioma){
+  if(!window.speechSynthesis){ alert('A voz não está disponível neste aparelho.'); return; }
+  const voz = new SpeechSynthesisUtterance(palavra);
+  voz.lang = LANG_CODES[idioma] || 'en-US';
+  voz.rate = .8;
+  speechSynthesis.cancel(); speechSynthesis.speak(voz);
+}
+function mostrarIdioma(idioma){
+  idiomaAtual = idioma;
+  const box = document.getElementById('listaCoresIdiomas');
+  const dados = CATEGORIAS_IDIOMA[categoriaIdiomaAtual].dados;
+  const colMap = { ingles:2, italiano:3, espanhol:4 };
+  const col = colMap[idioma];
+  box.innerHTML = dados.map(c=>`
+    <div class="lang-row">
+      <div style="font-size:22px">${c[0]}</div>
+      <div><b>${c[1]}</b></div>
+      <button onclick="falar('${c[col]}','${idioma}')">${c[col]} 🔊</button>
+    </div>`).join('');
+}
+
+/* ================= tabuada bilíngue (Fundamental I e II) ================= */
+function ehFundamental(){
+  return config.etapa === 'Fundamental I' || config.etapa === 'Fundamental II';
+}
+
+/* ================= indicação de livros (Fundamental I e II) ================= */
+const LIVROS_FUND1 = [
+  { titulo:'O Menino Maluquinho', autor:'Ziraldo', paginas:'~48', tema:'Acompanha o dia a dia de um menino cheio de imaginação e energia, que vive pequenas aventuras em casa e na escola e enxerga o mundo à sua própria maneira.' },
+  { titulo:'Marcelo, Marmelo, Martelo', autor:'Ruth Rocha', paginas:'~64', tema:'Coletânea de poemas curtos e divertidos que brincam com o som e o sentido das palavras, estimulando o gosto pela leitura desde cedo.' },
+  { titulo:'A Bolsa Amarela', autor:'Lygia Bojunga', paginas:'~160', tema:'Raquel guarda seus maiores desejos dentro de uma bolsa amarela e, ao longo da história, aprende a lidar com suas vontades de crescer.' },
+  { titulo:'O Pequeno Príncipe', autor:'Antoine de Saint-Exupéry', paginas:'~96', tema:'Um piloto perdido no deserto encontra um príncipe vindo de outro planeta, que conta sua jornada e ensina lições sobre amizade e sobre o que realmente importa na vida.' },
+  { titulo:'Reinações de Narizinho', autor:'Monteiro Lobato', paginas:'~200', tema:'As crianças do Sítio do Picapau Amarelo vivem aventuras mágicas ao lado de Emília, do Visconde de Sabugosa e de personagens de contos de fadas.' },
+  { titulo:'Bisa Bia, Bisa Bel', autor:'Ana Maria Machado', paginas:'~112', tema:'Isabel encontra uma foto da bisavó, que tinha o mesmo apelido dela quando criança, e passa a "conversar" com o fantasma da bisa, ligando gerações da família.' },
+];
+const LIVROS_FUND2 = [
+  { titulo:'Capitães da Areia', autor:'Jorge Amado', paginas:'~280', tema:'Um grupo de crianças e adolescentes abandonados vive nas ruas de Salvador, sobrevivendo de pequenos furtos e unidos por fortes laços de amizade e lealdade.' },
+  { titulo:'Vidas Secas', autor:'Graciliano Ramos', paginas:'~176', tema:'Acompanha a família de Fabiano, retirantes que enfrentam a seca no sertão nordestino, retratando a dureza da vida no campo e a luta pela sobrevivência.' },
+  { titulo:'A Moreninha', autor:'Joaquim Manuel de Macedo', paginas:'~200', tema:'Romance clássico brasileiro sobre Augusto e Carolina, que se apaixonam durante férias em uma ilha — um dos maiores exemplos do Romantismo no Brasil.' },
+  { titulo:'Iracema', autor:'José de Alencar', paginas:'~100', tema:'Conta o amor entre a índia Iracema e o colonizador português Martim, funcionando como uma alegoria da formação do povo brasileiro.' },
+  { titulo:'O Ateneu', autor:'Raul Pompeia', paginas:'~190', tema:'Narra as experiências de Sérgio em um rígido internato, retratando relações de poder, amizade e rivalidade entre os alunos.' },
+  { titulo:'Memórias de um Sargento de Milícias', autor:'Manuel Antônio de Almeida', paginas:'~280', tema:'Acompanha as peripécias de Leonardo, um jovem malandro no Rio de Janeiro colonial, contadas em tom irônico e bem-humorado.' },
+];
+const LIVROS_MEDIO = [
+  { titulo:'Dom Casmurro', autor:'Machado de Assis', paginas:'~250', tema:'Bentinho narra sua vida e o relacionamento com Capitu, deixando no ar a dúvida sobre uma possível traição — um dos maiores enigmas da literatura brasileira.' },
+  { titulo:'Memórias Póstumas de Brás Cubas', autor:'Machado de Assis', paginas:'~210', tema:'Narrado por um defunto-autor, o livro relembra a vida de Brás Cubas com ironia e crítica à sociedade da época.' },
+  { titulo:'O Cortiço', autor:'Aluísio Azevedo', paginas:'~200', tema:'Retrata a vida dos moradores de um cortiço no Rio de Janeiro, mostrando como o ambiente influencia o comportamento humano, sob a ótica do Naturalismo.' },
+  { titulo:'Grande Sertão: Veredas', autor:'Guimarães Rosa', paginas:'~600', tema:'Riobaldo narra sua trajetória como jagunço no sertão, misturando amor, coragem e reflexões filosóficas sobre o bem e o mal.' },
+  { titulo:'Quarto de Despejo', autor:'Carolina Maria de Jesus', paginas:'~175', tema:'Diário real de uma catadora de papel que registra as dificuldades da vida na favela do Canindé, em São Paulo, denunciando a fome e a desigualdade social.' },
+  { titulo:'Vidas Secas', autor:'Graciliano Ramos', paginas:'~176', tema:'Acompanha a família de Fabiano, retirantes que enfrentam a seca no sertão nordestino, retratando a dureza da vida no campo e a luta pela sobrevivência.' },
+];
+function ehFundamentalCompleto(){
+  return config.etapa === 'Fundamental I' || config.etapa === 'Fundamental II' || config.etapa === 'Ensino Médio';
+}
+function renderLivros(){
+  const el = document.getElementById('livros-lista');
+  if(!el) return;
+  let lista = LIVROS_FUND1;
+  if(config.etapa === 'Fundamental II') lista = LIVROS_FUND2;
+  else if(config.etapa === 'Ensino Médio') lista = LIVROS_MEDIO;
+  el.innerHTML = lista.map(l => `
+    <div class="plan-item">
+      <div class="top"><b style="font-size:13px">${escapeHtml(l.titulo)}</b><span class="badge st-Planejada">${escapeHtml(l.paginas)} pág.</span></div>
+      <div class="meta" style="margin-top:2px">${escapeHtml(l.autor)}</div>
+      <div class="meta" style="margin-top:4px">${escapeHtml(l.tema)}</div>
+    </div>`).join('');
+}
+function atualizarVisibilidadeLivros(){
+  const card = document.getElementById('card-livros');
+  if(!card) return;
+  const mostra = ehFundamentalCompleto();
+  card.style.display = mostra ? 'block' : 'none';
+  if(mostra) renderLivros();
+}
+function atualizarVisibilidadeTrabalhosDatas(){
+  const card = document.getElementById('card-trabalhos-datas');
+  if(!card) return;
+  card.style.display = (config.etapa === 'Ensino Médio') ? 'none' : 'block';
+}
+
+/* ================= trabalhos prontos para datas comemorativas ================= */
+const TRABALHOS_PRONTOS = {
+  dia_do_indio: {
+    titulo: '🪶 Dia do Índio',
+    infantil: { instrucao: 'Desenhe como você imagina uma aldeia indígena. Depois, pinte usando as cores que mais gosta.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva o que você aprendeu hoje sobre os povos indígenas brasileiros: seus costumes, suas casas e sua cultura.', temLinhas:8 }
+  },
+  pascoa: {
+    titulo: '🐰 Páscoa',
+    infantil: { instrucao: 'Desenhe um coelhinho da Páscoa e pinte com suas cores favoritas.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva por que a Páscoa é comemorada e o que ela representa para você e sua família.', temLinhas:8 }
+  },
+  dia_das_maes: {
+    titulo: '💐 Dia das Mães',
+    infantil: { instrucao: 'Desenhe sua mamãe. Depois complete: "Eu amo minha mãe porque..."', temDesenho:true, temLinhas:2 },
+    fundamental: { instrucao: 'Escreva um bilhete carinhoso para sua mãe (ou quem cuida de você), contando por que ela é especial.', temLinhas:8 }
+  },
+  dia_dos_pais: {
+    titulo: '👔 Dia dos Pais',
+    infantil: { instrucao: 'Desenhe seu papai. Depois complete: "Eu amo meu pai porque..."', temDesenho:true, temLinhas:2 },
+    fundamental: { instrucao: 'Escreva um bilhete carinhoso para seu pai (ou quem cuida de você), contando por que ele é especial.', temLinhas:8 }
+  },
+  carnaval: {
+    titulo: '🎭 Carnaval',
+    infantil: { instrucao: 'Desenhe uma máscara de carnaval bem colorida.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre a origem do Carnaval e suas principais características.', temLinhas:8 }
+  },
+  festa_junina: {
+    titulo: '🎪 Festa Junina',
+    infantil: { instrucao: 'Desenhe uma bandeirinha colorida para decorar a festa junina.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre as comidas, danças e tradições da Festa Junina que você mais gosta.', temLinhas:8 }
+  },
+  boi_bumba: {
+    titulo: '🐂 Boi Bumbá',
+    infantil: { instrucao: 'Desenhe um boi colorido, escolhendo ser do time Garantido (vermelho) ou Caprichoso (azul).', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre a tradição do Boi Bumbá e o Festival de Parintins.', temLinhas:8 }
+  },
+  meio_ambiente: {
+    titulo: '🌳 Meio Ambiente',
+    infantil: { instrucao: 'Desenhe uma árvore com os animais que vivem nela.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva o que você pode fazer no dia a dia para cuidar do meio ambiente.', temLinhas:8 }
+  },
+  independencia: {
+    titulo: '🇧🇷 Independência do Brasil',
+    infantil: { instrucao: 'Pinte a bandeira do Brasil usando as cores certas: verde, amarelo, azul e branco.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva o que a Independência do Brasil significa e por que é comemorada em 7 de setembro.', temLinhas:8 }
+  },
+  dia_das_criancas: {
+    titulo: '🎈 Dia das Crianças',
+    infantil: { instrucao: 'Desenhe o brinquedo ou a brincadeira que você mais gosta.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre como você gostaria de comemorar o Dia das Crianças.', temLinhas:8 }
+  },
+  consciencia_negra: {
+    titulo: '✊🏾 Consciência Negra',
+    infantil: { instrucao: 'Desenhe algo que representa a cultura afro-brasileira (música, dança, comida, roupa).', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre a importância do Dia da Consciência Negra e o que você aprendeu sobre a cultura afro-brasileira.', temLinhas:8 }
+  },
+  natal: {
+    titulo: '🎄 Natal',
+    infantil: { instrucao: 'Desenhe uma árvore de Natal bem decorada.', temDesenho:true },
+    fundamental: { instrucao: 'Escreva sobre as tradições de Natal da sua família.', temLinhas:8 }
+  }
+};
+function imprimirTrabalho(chave){
+  const t = TRABALHOS_PRONTOS[chave]; if(!t) return;
+  const versao = (config.etapa === 'Educação Infantil') ? t.infantil : t.fundamental;
+  let corpoExtra = '';
+  if(versao.temDesenho){
+    corpoExtra += `<div style="border:2px solid #333;border-radius:8px;height:230px;margin-top:18px"></div>`;
+  }
+  if(versao.temLinhas){
+    for(let i=0; i<versao.temLinhas; i++){
+      corpoExtra += `<div style="border-bottom:1px solid #999;height:30px;margin-top:6px"></div>`;
+    }
+  }
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${t.titulo}</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111}
+      h1{font-size:20px;margin:0 0 6px}
+      .cabecalho{border-bottom:1px solid #999;padding-bottom:10px;margin-bottom:14px;font-size:13px;line-height:1.9}
+      p.instrucao{font-size:15px;margin:10px 0}
+      ${estiloToolbarImpressao()}
+    </style></head>
+    <body>
+      ${toolbarImpressao()}
+      <h1>${t.titulo}</h1>
+      <div class="cabecalho">Nome: _______________________________________<br>Turma: ______________&nbsp;&nbsp;&nbsp; Data: ___/___/______</div>
+      <p class="instrucao">${escapeHtml(versao.instrucao)}</p>
+      ${corpoExtra}
+    </body></html>`;
+  const janela = window.open('', '_blank');
+  if(!janela){ alert('Permita pop-ups no navegador para imprimir.'); return; }
+  janela.document.open();
+  janela.document.write(html);
+  janela.document.close();
+  janela.focus();
+  setTimeout(()=>{ try{ janela.print(); }catch(e){} }, 350);
+}
+
+function preencherSelectTabuada(){
+  const sel = document.getElementById('tabuada-numero');
+  if(sel && sel.options.length === 0){
+    let opts = '';
+    for(let n=1;n<=40;n++) opts += `<option value="${n}">Tabuada do ${n}</option>`;
+    sel.innerHTML = opts;
+  }
+}
+function renderTabuada(){
+  const sel = document.getElementById('tabuada-numero');
+  if(!sel) return;
+  const n = parseInt(sel.value || '1');
+  let html = '';
+  for(let i=1;i<=10;i++){
+    const r = n*i;
+    html += `<div class="lang-row" style="grid-template-columns:1fr auto auto auto">
+      <div><b>${n} × ${i} = ${r}</b></div>
+      <button onclick="falar('${r}','ingles')">EN 🔊</button>
+      <button onclick="falar('${r}','espanhol')">ES 🔊</button>
+      <button onclick="falar('${r}','italiano')">IT 🔊</button>
+    </div>`;
+  }
+  document.getElementById('tabuada-lista').innerHTML = html;
+}
+function atualizarVisibilidadeTabuada(){
+  const card = document.getElementById('card-tabuada');
+  if(!card) return;
+  const mostra = ehFundamental();
+  card.style.display = mostra ? 'block' : 'none';
+  if(mostra){ preencherSelectTabuada(); renderTabuada(); }
+}
+
+/* ================= provas rápidas + gabarito com senha ================= */
+function ehFundamentalOuMedio(){ return config.etapa !== 'Educação Infantil'; }
+function preencherSelectProva(){
+  const sel = document.getElementById('prova-materia');
+  if(!sel) return;
+  const valorAnterior = sel.value;
+  const materias = getComponentesAtuais().filter(m => BANCO_PROVAS[m]);
+  sel.innerHTML = materias.map(m=>`<option>${m}</option>`).join('');
+  if(materias.includes(valorAnterior)) sel.value = valorAnterior;
+}
+function atualizarVisibilidadeProvas(){
+  const card = document.getElementById('card-provas');
+  if(!card) return;
+  const mostra = ehFundamentalOuMedio();
+  card.style.display = mostra ? 'block' : 'none';
+  if(mostra){ preencherSelectProva(); }
+}
+/* girar as alternativas de uma questão conforme a versão (0=A, 1=B, 2=C).
+   novaPos = posição na versão impressa; idxOriginal = posição real no banco de perguntas. */
+function alternativasRotacionadas(q, versao){
+  const n = q.alternativas.length;
+  const k = ((versao % n) + n) % n;
+  return q.alternativas.slice(k).concat(q.alternativas.slice(0,k));
+}
+function posOriginalParaNova(q, versao, idxOriginal){
+  const n = q.alternativas.length;
+  const k = ((versao % n) + n) % n;
+  return ((idxOriginal - k) % n + n) % n;
+}
+function posNovaParaOriginal(q, versao, novaPos){
+  const n = q.alternativas.length;
+  const k = ((versao % n) + n) % n;
+  return (novaPos + k) % n;
+}
+function imprimirProva(){
+  const materia = document.getElementById('prova-materia').value;
+  const perguntas = BANCO_PROVAS[materia] || [];
+  const qtdVersoes = parseInt(document.getElementById('prova-qtd-versoes').value || '1');
+  let paginas = '';
+  for(let v = 0; v < qtdVersoes; v++){
+    const corpo = perguntas.map((q,i) => {
+      const rotadas = alternativasRotacionadas(q, v);
+      return `<p style="margin:16px 0 4px;font-size:14px"><b>${i+1}. ${escapeHtml(q.pergunta)}</b></p>` +
+        rotadas.map((alt,idx) => `<p style="margin:2px 0 2px 18px;font-size:13px">${String.fromCharCode(97+idx)}) ${escapeHtml(alt)}</p>`).join('');
+    }).join('');
+    const quebraPagina = v < qtdVersoes - 1 ? 'page-break-after:always;' : '';
+    const letra = String.fromCharCode(65+v);
+    const badgeTopo = qtdVersoes > 1 ? `<div class="badge-versao">${letra}</div>` : '';
+    const rodape = qtdVersoes > 1 ? `<div class="rodape-versao">Modelo ${letra}</div>` : '';
+    paginas += `<div class="pagina-prova" style="${quebraPagina}position:relative;">
+      ${badgeTopo}
+      <h1>Prova de ${materia}</h1>
+      <div class="cabecalho">Nome: _______________________________________<br>Turma: ______________&nbsp;&nbsp;&nbsp; Data: ___/___/______</div>
+      ${corpo}
+      ${rodape}
+    </div>`;
+  }
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Prova de ${materia}</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111}
+      h1{font-size:19px;margin:0 0 10px}
+      .cabecalho{border-bottom:1px solid #999;padding-bottom:12px;margin-bottom:6px;font-size:13px;line-height:1.9}
+      .pagina-prova{min-height:90vh}
+      .badge-versao{
+        position:absolute; top:0; right:0;
+        width:46px;height:46px;border-radius:10px;
+        background:#111;color:#fff;
+        display:flex;align-items:center;justify-content:center;
+        font-size:24px;font-weight:bold;
+      }
+      .rodape-versao{
+        margin-top:30px;text-align:center;font-size:13px;color:#555;
+        border-top:1px solid #ccc;padding-top:8px;
+      }
+      ${estiloToolbarImpressao()}
+    </style></head>
+    <body>${toolbarImpressao()}${paginas}</body></html>`;
+  const janela = window.open('', '_blank');
+  if(!janela){ alert('Permita pop-ups no navegador para imprimir a prova.'); return; }
+  janela.document.open();
+  janela.document.write(html);
+  janela.document.close();
+  janela.focus();
+  setTimeout(()=>{ try{ janela.print(); }catch(e){} }, 350);
+}
+
+let pinAcaoPendente = null;
+let pinDestino = 'provas';
+function acessarGabarito(destino){
+  pinDestino = destino || 'provas';
+  let pinSalvo = null;
+  try{ pinSalvo = localStorage.getItem('gabaritoPin'); }catch(e){}
+  if(!pinSalvo){
+    pinAcaoPendente = 'criar';
+    document.getElementById('pin-titulo').textContent = 'Criar senha do gabarito';
+    document.getElementById('pin-sub').textContent = 'Essa senha protege o gabarito para que os alunos não vejam sem você por perto. Guarde-a em um lugar seguro.';
+  } else {
+    pinAcaoPendente = 'verificar';
+    document.getElementById('pin-titulo').textContent = 'Digite a senha do gabarito';
+    document.getElementById('pin-sub').textContent = 'Digite a senha de 4 números cadastrada.';
+  }
+  document.getElementById('pin-input').value = '';
+  document.getElementById('modal-pin').classList.add('open');
+}
+function mostrarConteudoTrancado(){
+  if(pinDestino === 'formulas'){ mostrarRespostasFormulas(); } else { mostrarGabarito(); }
+}
+function confirmarPin(){
+  const valor = document.getElementById('pin-input').value.trim();
+  if(!/^\d{4}$/.test(valor)){ alert('Digite exatamente 4 números.'); return; }
+  if(pinAcaoPendente === 'criar'){
+    try{ localStorage.setItem('gabaritoPin', valor); }catch(e){}
+    fecharModal('modal-pin');
+    mostrarConteudoTrancado();
+  } else {
+    let pinSalvo = null;
+    try{ pinSalvo = localStorage.getItem('gabaritoPin'); }catch(e){}
+    if(valor === pinSalvo){ fecharModal('modal-pin'); mostrarConteudoTrancado(); }
+    else { alert('Senha incorreta.'); }
+  }
+}
+function esqueciSenhaPin(){
+  if(confirm('Isso apaga a senha atual do gabarito, e da próxima vez você cria uma nova. Continuar?')){
+    try{ localStorage.removeItem('gabaritoPin'); }catch(e){}
+    fecharModal('modal-pin');
+    alert('Senha apagada. Toque em "Ver gabarito" novamente para criar uma nova.');
+  }
+}
+function mostrarRespostasFormulas(){
+  const nivel = config.nivel;
+  const lista = EXERCICIOS_FORMULAS[nivel] || [...EXERCICIOS_FORMULAS['1ª série'], ...EXERCICIOS_FORMULAS['2ª série'], ...EXERCICIOS_FORMULAS['3ª série']];
+  document.getElementById('gabarito-titulo').textContent = 'Respostas — ' + (EXERCICIOS_FORMULAS[nivel] ? nivel : 'exercícios de matemática');
+  document.getElementById('gabarito-corpo').innerHTML = lista.map((e,i) =>
+    `<div class="plan-item"><b>${i+1}.</b> ${escapeHtml(e.pergunta)}<div class="meta" style="margin-top:4px">Resposta: ${escapeHtml(e.resposta)}</div></div>`).join('');
+  document.getElementById('modal-gabarito').classList.add('open');
+}
+let gabaritoVersaoAtual = 0;
+function mostrarGabarito(){
+  gabaritoVersaoAtual = 0;
+  document.getElementById('gabarito-titulo').textContent = 'Gabarito — ' + document.getElementById('prova-materia').value;
+  renderGabaritoCorpo();
+  document.getElementById('modal-gabarito').classList.add('open');
+}
+function mudarVersaoGabarito(v){ gabaritoVersaoAtual = v; renderGabaritoCorpo(); }
+function renderGabaritoCorpo(){
+  const materia = document.getElementById('prova-materia').value;
+  const perguntas = BANCO_PROVAS[materia] || [];
+  const qtdVersoes = parseInt(document.getElementById('prova-qtd-versoes').value || '1');
+  let chips = '';
+  if(qtdVersoes > 1){
+    chips = '<div class="chips" style="margin-bottom:10px">' +
+      Array.from({length: qtdVersoes}, (_,v) =>
+        `<button class="chip ${gabaritoVersaoAtual===v?'active':''}" onclick="mudarVersaoGabarito(${v})">Versão ${String.fromCharCode(65+v)}</button>`
+      ).join('') + '</div>';
+  }
+  const corpo = perguntas.map((q,i) => {
+    const novaPos = posOriginalParaNova(q, gabaritoVersaoAtual, q.correta);
+    return `<div class="plan-item"><b>${i+1}.</b> ${String.fromCharCode(97+novaPos)}) ${escapeHtml(q.alternativas[q.correta])}</div>`;
+  }).join('');
+  document.getElementById('gabarito-corpo').innerHTML = chips + corpo;
+}
+
+/* ================= notas: correção rápida (toca as respostas, a nota sai sozinha) e boletim ================= */
+function preencherSelectNotas(){
+  const sel = document.getElementById('notas-materia');
+  if(!sel) return;
+  const valorAnterior = sel.value;
+  const materias = getComponentesAtuais().filter(m => BANCO_PROVAS[m]);
+  sel.innerHTML = materias.map(m=>`<option>${m}</option>`).join('');
+  if(materias.includes(valorAnterior)) sel.value = valorAnterior;
+}
+function renderListaNotas(){
+  const t = turmaAtual(); const el = document.getElementById('notas-lista');
+  if(!t || !el) return;
+  const sel = document.getElementById('notas-materia');
+  const materia = sel ? sel.value : null;
+  if(t.alunos.length===0){ el.innerHTML = '<div class="empty">Cadastre alunos para lançar notas.</div>'; return; }
+  el.innerHTML = t.alunos.map(a=>{
+    const historico = (notas[a.id]||[]).filter(n=>n.materia===materia);
+    const ultima = historico[historico.length-1];
+    return `<div class="aluno-row">
+      <div>
+        <div class="nome">${escapeHtml(a.nome)}</div>
+        <div class="sub">${ultima ? `Última nota: ${ultima.nota.toFixed(1)} (${ultima.acertos}/${ultima.total} acertos, ${fmtData(ultima.data)})` : 'Sem nota lançada nesta matéria'}</div>
+      </div>
+      <div class="btns" style="align-items:center">
+        <select id="versao-${a.id}" style="border:1px solid var(--border);border-radius:9px;padding:6px;font-size:12px;background:var(--card);color:var(--text)">
+          <option value="0">Versão A</option>
+          <option value="1">Versão B</option>
+          <option value="2">Versão C</option>
+        </select>
+        <button onclick="abrirCorrecao('${a.id}')">📝 Lançar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function abrirCorrecao(alunoId){
+  const sel = document.getElementById('notas-materia');
+  const materia = sel ? sel.value : null;
+  const perguntas = BANCO_PROVAS[materia] || [];
+  if(perguntas.length===0){ alert('Não há perguntas cadastradas para esta matéria ainda.'); return; }
+  const versaoSel = document.getElementById('versao-'+alunoId);
+  const versao = versaoSel ? parseInt(versaoSel.value) : 0;
+  correcaoAtual = { alunoId, materia, versao, respostas: new Array(perguntas.length).fill(null) };
+  renderModalCorrecao();
+  document.getElementById('modal-correcao').classList.add('open');
+}
+function renderModalCorrecao(){
+  const perguntas = BANCO_PROVAS[correcaoAtual.materia] || [];
+  const t = turmaAtual();
+  const aluno = t ? t.alunos.find(a=>a.id===correcaoAtual.alunoId) : null;
+  const versaoLetra = String.fromCharCode(65 + correcaoAtual.versao);
+  document.getElementById('correcao-titulo').textContent = 'Corrigindo — ' + (aluno ? aluno.nome : '') + ' (' + correcaoAtual.materia + ' — Versão ' + versaoLetra + ')';
+  document.getElementById('correcao-corpo').innerHTML = perguntas.map((q,i)=>{
+    const rotadas = alternativasRotacionadas(q, correcaoAtual.versao);
+    return `<div class="plan-item">
+      <b style="font-size:13px">${i+1}. ${escapeHtml(q.pergunta)}</b>
+      <div class="pill-toggle" style="margin-top:8px;flex-wrap:wrap">
+        ${rotadas.map((alt,idx)=>`<button class="${correcaoAtual.respostas[i]===idx?'on-presente':''}" onclick="selecionarResposta(${i},${idx})">${String.fromCharCode(97+idx)}</button>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+function selecionarResposta(i, idx){
+  correcaoAtual.respostas[i] = idx;
+  renderModalCorrecao();
+}
+function salvarCorrecao(){
+  const perguntas = BANCO_PROVAS[correcaoAtual.materia] || [];
+  if(correcaoAtual.respostas.some(r => r === null)){ alert('Marque a resposta de todas as perguntas.'); return; }
+  let acertos = 0;
+  perguntas.forEach((q,i)=>{
+    const idxOriginal = posNovaParaOriginal(q, correcaoAtual.versao, correcaoAtual.respostas[i]);
+    if(idxOriginal === q.correta) acertos++;
+  });
+  const nota = Math.round((acertos/perguntas.length)*10*10)/10;
+  if(!notas[correcaoAtual.alunoId]) notas[correcaoAtual.alunoId] = [];
+  notas[correcaoAtual.alunoId].push({ materia: correcaoAtual.materia, data: new Date().toISOString().slice(0,10), acertos, total: perguntas.length, nota });
+  persistir('notas', notas);
+  fecharModal('modal-correcao');
+  renderListaNotas();
+  renderBoletim();
+  alert('Nota calculada: ' + nota.toFixed(1) + ' (' + acertos + '/' + perguntas.length + ' acertos)');
+}
+function calcularMediaAluno(alunoId){
+  const registros = notas[alunoId] || [];
+  if(registros.length === 0) return null;
+  const soma = registros.reduce((s,r)=>s+r.nota, 0);
+  return soma / registros.length;
+}
+function renderBoletim(){
+  const t = turmaAtual(); const el = document.getElementById('boletim-lista');
+  if(!el) return;
+  const labelEl = document.getElementById('media-aprovacao-label');
+  if(labelEl) labelEl.textContent = mediaAprovacao.toFixed(1);
+  if(!t || t.alunos.length===0){ el.innerHTML=''; return; }
+  el.innerHTML = t.alunos.map(a=>{
+    const media = calcularMediaAluno(a.id);
+    let status, classe;
+    if(media === null){ status = 'Sem notas lançadas'; classe = 'st-Adiada'; }
+    else if(media >= mediaAprovacao){ status = 'Aprovado(a)'; classe = 'st-Realizada'; }
+    else if(media >= mediaAprovacao - 2){ status = `Faltam ${(mediaAprovacao-media).toFixed(1)} pontos`; classe = 'st-Planejada'; }
+    else { status = 'Reprovado(a)'; classe = 'st-Cancelada'; }
+    return `<div class="plan-item">
+      <div class="top"><b>${escapeHtml(a.nome)}</b><span class="badge ${classe}">${status}</span></div>
+      ${media !== null ? `<div class="meta" style="margin-top:4px">Média geral (todas as matérias lançadas): ${media.toFixed(1)}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+function abrirModalMediaAprovacao(){
+  const nova = prompt('Qual é a média mínima para aprovação?', mediaAprovacao);
+  if(nova === null) return;
+  const num = parseFloat(String(nova).replace(',','.'));
+  if(isNaN(num)){ alert('Digite um número válido.'); return; }
+  mediaAprovacao = num;
+  persistir('mediaAprovacao', mediaAprovacao);
+  renderBoletim();
+}
+
+/* ================= busca ================= */
+/* ================= materiais offline: crachás, etiquetas, moldes, figuras, desenhos e papéis base ================= */
+function novaJanelaImpressao(tituloPagina, corpoHtml){
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${tituloPagina}</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;padding:24px;color:#111}
+      h1{font-size:19px;margin:0 0 10px}
+      .grade{display:flex;flex-wrap:wrap;gap:10px}
+      .pagina{page-break-after:always}
+      ${estiloToolbarImpressao()}
+    </style></head>
+    <body>${toolbarImpressao()}${corpoHtml}</body></html>`;
+  const janela = window.open('', '_blank');
+  if(!janela){ alert('Permita pop-ups no navegador para imprimir.'); return; }
+  janela.document.open();
+  janela.document.write(html);
+  janela.document.close();
+  janela.focus();
+  setTimeout(()=>{ try{ janela.print(); }catch(e){} }, 350);
+}
+function imprimirCrachas(){
+  const t = turmaAtual();
+  const temAlunos = t && t.alunos && t.alunos.length;
+  const lista = temAlunos ? t.alunos.map(a=>({nome:a.nome, turma:t.nome})) : Array.from({length:8},()=>({nome:'',turma:''}));
+  const cartoes = lista.map(n => `
+    <div style="width:220px;border:3px dashed #333;border-radius:16px;padding:16px;text-align:center;display:inline-block">
+      <div style="font-size:28px">🪪</div>
+      <div style="font-size:18px;font-weight:bold;margin-top:8px;min-height:24px">${n.nome ? escapeHtml(n.nome) : '_______________'}</div>
+      <div style="font-size:13px;color:#555;margin-top:6px">${n.turma ? 'Turma: '+escapeHtml(n.turma) : 'Turma: ___________'}</div>
+    </div>`).join('');
+  const aviso = temAlunos ? '' : '<p style="font-size:12px;color:#777">Nenhuma turma com alunos cadastrados ainda — modelos em branco para preencher à mão.</p>';
+  novaJanelaImpressao('Crachás', `<h1>🪪 Crachás${temAlunos ? ' — '+escapeHtml(t.nome) : ''}</h1>${aviso}<div class="grade">${cartoes}</div>`);
+}
+function imprimirEtiquetas(){
+  const t = turmaAtual();
+  const temAlunos = t && t.alunos && t.alunos.length;
+  const nomes = temAlunos ? t.alunos.map(a=>a.nome) : Array.from({length:12},()=>'');
+  const etiquetas = nomes.map(nome => `
+    <div style="width:170px;border:2px dashed #333;border-radius:10px;padding:10px 8px;text-align:center;display:inline-block;font-size:14px;font-weight:bold">
+      ${nome ? escapeHtml(nome) : '_______________'}
+    </div>`).join('');
+  const aviso = temAlunos ? '' : '<p style="font-size:12px;color:#777">Nenhuma turma com alunos cadastrados ainda — modelos em branco para preencher à mão.</p>';
+  novaJanelaImpressao('Etiquetas com nomes', `<h1>🏷️ Etiquetas com nomes${temAlunos ? ' — '+escapeHtml(t.nome) : ''}</h1>${aviso}<div class="grade">${etiquetas}</div>`);
+}
+function imprimirMoldes(){
+  const svgWrap = (inner) => `<div style="display:inline-block;text-align:center"><svg width="170" height="170" viewBox="0 0 200 200">${inner}</svg></div>`;
+  const formas =
+    svgWrap('<circle cx="100" cy="100" r="90" stroke="black" stroke-width="3" stroke-dasharray="10,8" fill="none"/>') +
+    svgWrap('<rect x="20" y="20" width="160" height="160" stroke="black" stroke-width="3" stroke-dasharray="10,8" fill="none"/>') +
+    svgWrap('<rect x="10" y="55" width="180" height="90" stroke="black" stroke-width="3" stroke-dasharray="10,8" fill="none"/>') +
+    svgWrap('<polygon points="100,15 185,180 15,180" stroke="black" stroke-width="3" stroke-dasharray="10,8" fill="none"/>') +
+    svgWrap('<polygon points="100,10 122,69 186,72 136,112 153,173 100,138 47,173 64,112 14,72 78,69" stroke="black" stroke-width="3" stroke-dasharray="10,8" fill="none"/>') +
+    svgWrap('<path d="M100,175 C40,125 10,85 10,55 C10,25 35,10 60,10 C80,10 95,20 100,40 C105,20 120,10 140,10 C165,10 190,25 190,55 C190,85 160,125 100,175 Z" stroke="black" stroke-width="3" stroke-dasharray="10,8" fill="none"/>');
+  novaJanelaImpressao('Moldes para recortar', `<h1>✂️ Moldes para recortar</h1><p style="font-size:12px;color:#777">Recorte pela linha tracejada.</p><div class="grade">${formas}</div>`);
+}
+function abrirVideosEducativos(){
+  window.open('https://www.youtube.com/results?search_query=' + encodeURIComponent('vídeos educativos infantil'), '_blank');
+}
+function pontosEspiral(cx, cy, voltas, raioMax, pontos){
+  let d = '';
+  for(let i=0; i<=pontos; i++){
+    const t = i/pontos;
+    const angulo = t * voltas * 2 * Math.PI;
+    const raio = t * raioMax;
+    const x = cx + raio * Math.cos(angulo);
+    const y = cy + raio * Math.sin(angulo);
+    d += (i===0?'M':'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+  }
+  return d;
+}
+function imprimirTracos(){
+  let retas = '';
+  for(let i=0;i<6;i++){
+    retas += `<svg width="100%" height="34" viewBox="0 0 600 34" preserveAspectRatio="none" style="display:block;margin-bottom:6px">
+      <circle cx="10" cy="17" r="5" fill="#333"/>
+      <line x1="20" y1="17" x2="590" y2="17" stroke="#333" stroke-width="2" stroke-dasharray="6,6"/>
+    </svg>`;
+  }
+  let ondas = '';
+  for(let i=0;i<3;i++){
+    ondas += `<svg width="100%" height="60" viewBox="0 0 600 60" preserveAspectRatio="none" style="display:block;margin-bottom:10px">
+      <circle cx="10" cy="30" r="5" fill="#333"/>
+      <path d="M20,30 Q65,5 110,30 T200,30 T290,30 T380,30 T470,30 T560,30" stroke="#333" stroke-width="2" fill="none" stroke-dasharray="6,6"/>
+    </svg>`;
+  }
+  const espiral = `<svg width="220" height="220" viewBox="0 0 220 220" style="display:block;margin:10px auto">
+    <path d="${pontosEspiral(110,110,3.5,95,120)}" stroke="#333" stroke-width="2" fill="none" stroke-dasharray="6,6"/>
+  </svg>`;
+  const pontosEstrela = [[100,10],[122,69],[186,72],[136,112],[153,173],[100,138],[47,173],[64,112],[14,72],[78,69]];
+  const pontinhos = `<svg width="220" height="220" viewBox="0 0 200 200" style="display:block;margin:10px auto">
+    ${pontosEstrela.map((p,i) => `<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="#333"/><text x="${p[0]+7}" y="${p[1]-5}" font-size="11" fill="#333">${i+1}</text>`).join('')}
+  </svg>`;
+  const corpo = `
+    <h1>〰️ Traços — coordenação motora</h1>
+    <h3 style="font-size:14px;margin-top:18px">1. Linhas retas</h3>
+    ${retas}
+    <h3 style="font-size:14px;margin-top:18px">2. Linhas onduladas</h3>
+    ${ondas}
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:10px">
+      <div style="text-align:center"><h3 style="font-size:14px">3. Espiral</h3>${espiral}</div>
+      <div style="text-align:center"><h3 style="font-size:14px">4. Ligue os pontinhos</h3>${pontinhos}</div>
+    </div>
+    <h3 style="font-size:14px;margin-top:18px">5. Traçado livre</h3>
+    <div style="border:2px solid #333;border-radius:8px;height:150px"></div>`;
+  novaJanelaImpressao('Folha de traçados', corpo);
+}
+function imprimirDesenhosColorir(){
+  const svgWrap = (inner) => `<div style="display:inline-block;text-align:center;border:1px solid #ddd;border-radius:10px;padding:8px"><svg width="170" height="170" viewBox="0 0 200 200">${inner}</svg></div>`;
+  const sol = '<circle cx="100" cy="100" r="50" stroke="black" stroke-width="6" fill="none"/>'
+    + '<line x1="160" y1="100" x2="185" y2="100" stroke="black" stroke-width="6"/>'
+    + '<line x1="142" y1="142" x2="160" y2="160" stroke="black" stroke-width="6"/>'
+    + '<line x1="100" y1="160" x2="100" y2="185" stroke="black" stroke-width="6"/>'
+    + '<line x1="58" y1="142" x2="40" y2="160" stroke="black" stroke-width="6"/>'
+    + '<line x1="40" y1="100" x2="15" y2="100" stroke="black" stroke-width="6"/>'
+    + '<line x1="58" y1="58" x2="40" y2="40" stroke="black" stroke-width="6"/>'
+    + '<line x1="100" y1="40" x2="100" y2="15" stroke="black" stroke-width="6"/>'
+    + '<line x1="142" y1="58" x2="160" y2="40" stroke="black" stroke-width="6"/>';
+  const casa = '<rect x="50" y="90" width="100" height="80" stroke="black" stroke-width="5" fill="none"/>'
+    + '<polygon points="40,90 100,40 160,90" stroke="black" stroke-width="5" fill="none"/>'
+    + '<rect x="90" y="130" width="30" height="40" stroke="black" stroke-width="5" fill="none"/>'
+    + '<rect x="60" y="105" width="25" height="25" stroke="black" stroke-width="5" fill="none"/>';
+  const peixe = '<ellipse cx="90" cy="100" rx="60" ry="35" stroke="black" stroke-width="5" fill="none"/>'
+    + '<polygon points="150,100 190,75 190,125" stroke="black" stroke-width="5" fill="none"/>'
+    + '<circle cx="60" cy="90" r="5" fill="black"/>';
+  const flor = '<circle cx="100" cy="100" r="20" stroke="black" stroke-width="5" fill="none"/>'
+    + '<g stroke="black" stroke-width="5" fill="none">'
+    +   '<ellipse cx="100" cy="55" rx="15" ry="25" transform="rotate(0 100 100)"/>'
+    +   '<ellipse cx="100" cy="55" rx="15" ry="25" transform="rotate(72 100 100)"/>'
+    +   '<ellipse cx="100" cy="55" rx="15" ry="25" transform="rotate(144 100 100)"/>'
+    +   '<ellipse cx="100" cy="55" rx="15" ry="25" transform="rotate(216 100 100)"/>'
+    +   '<ellipse cx="100" cy="55" rx="15" ry="25" transform="rotate(288 100 100)"/>'
+    + '</g>'
+    + '<line x1="100" y1="120" x2="100" y2="180" stroke="black" stroke-width="5"/>';
+  const coracao = '<path d="M100,170 C40,120 10,80 10,50 C10,20 35,5 60,5 C80,5 95,15 100,35 C105,15 120,5 140,5 C165,5 190,20 190,50 C190,80 160,120 100,170 Z" stroke="black" stroke-width="5" fill="none"/>';
+  const borboleta = '<line x1="100" y1="40" x2="100" y2="160" stroke="black" stroke-width="5"/>'
+    + '<ellipse cx="65" cy="70" rx="35" ry="25" stroke="black" stroke-width="5" fill="none" transform="rotate(-20 65 70)"/>'
+    + '<ellipse cx="135" cy="70" rx="35" ry="25" stroke="black" stroke-width="5" fill="none" transform="rotate(20 135 70)"/>'
+    + '<ellipse cx="70" cy="125" rx="25" ry="18" stroke="black" stroke-width="5" fill="none" transform="rotate(-15 70 125)"/>'
+    + '<ellipse cx="130" cy="125" rx="25" ry="18" stroke="black" stroke-width="5" fill="none" transform="rotate(15 130 125)"/>';
+  const desenhos = svgWrap(sol) + svgWrap(casa) + svgWrap(peixe) + svgWrap(flor) + svgWrap(coracao) + svgWrap(borboleta);
+  novaJanelaImpressao('Desenhos para colorir', `<h1>⭐ Desenhos para colorir</h1><div class="grade">${desenhos}</div>`);
+}
+function imprimirFiguras(){
+  const itens = [
+    ['🐶','Cachorro'],['🐱','Gato'],['🚗','Carro'],['🏠','Casa'],
+    ['⚽','Bola'],['🌳','Árvore'],['☀️','Sol'],['🌙','Lua'],
+    ['🍎','Maçã'],['👕','Camiseta'],['📚','Livro'],['✏️','Lápis'],
+  ];
+  const cartas = itens.map(([e,nome]) => `
+    <div style="width:130px;border:2px dashed #333;border-radius:12px;padding:14px;text-align:center;display:inline-block">
+      <div style="font-size:46px">${e}</div>
+      <div style="font-size:14px;font-weight:bold;margin-top:6px">${nome}</div>
+    </div>`).join('');
+  novaJanelaImpressao('Imagens e figuras', `<h1>🖼️ Imagens e figuras</h1><p style="font-size:12px;color:#777">Recorte para usar como cartões ou fichas visuais.</p><div class="grade">${cartas}</div>`);
+}
+function imprimirMateriaisBase(){
+  let pauta = '';
+  for(let i=0;i<22;i++) pauta += '<div style="border-bottom:1px solid #999;height:34px"></div>';
+  let quadriculado = '<div style="display:grid;grid-template-columns:repeat(18,1fr);width:100%">' +
+    Array.from({length:18*24}).map(()=>'<div style="border:0.5px solid #ccc;aspect-ratio:1"></div>').join('') + '</div>';
+  let tracejado = '';
+  for(let i=0;i<13;i++){
+    tracejado += '<div style="border-bottom:1px solid #333;height:16px"></div><div style="border-bottom:1px dashed #999;height:16px;margin-bottom:8px"></div>';
+  }
+  const corpo = `
+    <div class="pagina"><h1>📏 Papel pautado</h1>${pauta}</div>
+    <div class="pagina"><h1>▦ Papel quadriculado</h1>${quadriculado}</div>
+    <div><h1>✍️ Papel para caligrafia (tracejado)</h1>${tracejado}</div>`;
+  novaJanelaImpressao('Materiais para imprimir', corpo);
+}
+
+/* ================= busca ================= */
+function buscar(termo){ window.open('https://www.google.com/search?q=' + encodeURIComponent('atividade educação infantil ' + termo), '_blank'); }
+function pesquisar(){ buscar(document.getElementById('busca').value.trim() || 'atividades educação infantil'); }
+
+/* ================= calendário letivo ================= */
+function abrirModalEvento(){
+  document.getElementById('fe-data').value = new Date().toISOString().slice(0,10);
+  document.getElementById('fe-titulo').value = '';
+  document.getElementById('modal-evento').classList.add('open');
+}
+function salvarEvento(){
+  const titulo = document.getElementById('fe-titulo').value.trim();
+  if(!titulo){ alert('Digite um título.'); return; }
+  calendario.push({ id:'e'+Date.now(), data:document.getElementById('fe-data').value, titulo, tipo:document.getElementById('fe-tipo').value });
+  persistir('calendario', calendario);
+  fecharModal('modal-evento'); renderCalendario();
+}
+function excluirEvento(id){ calendario = calendario.filter(e=>e.id!==id); persistir('calendario', calendario); renderCalendario(); }
+function renderCalendario(){
+  const el = document.getElementById('calendario-list');
+  if(calendario.length===0){ el.innerHTML='<div class="empty">Nenhum evento cadastrado.</div>'; return; }
+  const ord = [...calendario].sort((a,b)=>(a.data||'').localeCompare(b.data||''));
+  el.innerHTML = ord.map(e=>`
+    <div class="plan-item">
+      <div class="top"><b>${escapeHtml(e.titulo)}</b><span class="badge st-Planejada">${e.tipo}</span></div>
+      <div class="meta">${fmtData(e.data)}</div>
+      <div class="actions"><button class="del" onclick="excluirEvento('${e.id}')">🗑️ Excluir</button></div>
+    </div>`).join('');
+}
+
+/* ================= comunicados aos pais ================= */
+function abrirModalComunicado(){
+  document.getElementById('fc-data').value = new Date().toISOString().slice(0,10);
+  document.getElementById('fc-texto').value = '';
+  document.getElementById('modal-comunicado').classList.add('open');
+}
+function salvarComunicado(){
+  const texto = document.getElementById('fc-texto').value.trim();
+  if(!texto){ alert('Escreva a mensagem.'); return; }
+  comunicados.push({ id:'c'+Date.now(), data:document.getElementById('fc-data').value, texto });
+  persistir('comunicados', comunicados);
+  fecharModal('modal-comunicado'); renderComunicados();
+}
+function excluirComunicado(id){ comunicados = comunicados.filter(c=>c.id!==id); persistir('comunicados', comunicados); renderComunicados(); }
+function renderComunicados(){
+  const el = document.getElementById('comunicados-list');
+  if(comunicados.length===0){ el.innerHTML='<div class="empty">Nenhum comunicado enviado ainda.</div>'; return; }
+  const ord = [...comunicados].sort((a,b)=>(b.data||'').localeCompare(a.data||''));
+  el.innerHTML = ord.map(c=>`
+    <div class="plan-item">
+      <div class="meta">${fmtData(c.data)}</div>
+      <div style="font-size:13px;margin-top:3px">${escapeHtml(c.texto)}</div>
+      <div class="actions"><button class="del" onclick="excluirComunicado('${c.id}')">🗑️ Excluir</button></div>
+    </div>`).join('');
+}
+
+/* ================= salvar / exportar / importar ================= */
+function atualizarAplicativo(){
+  const url = window.location.pathname + '?atualizado=' + Date.now();
+  window.location.href = url;
+}
+function salvarTudo(){ try{ localStorage.setItem('ultimoSalvamento', new Date().toISOString()); }catch(e){} alert('✅ Dados salvos neste aparelho.'); }
+function excluirDados(){ if(confirm('Deseja excluir todos os dados salvos neste aparelho?')){ try{ localStorage.clear(); }catch(e){} location.reload(); } }
+async function compartilhar(){
+  if(navigator.share){ try{ await navigator.share({ title:'Planejamento da professora', text:'App de planejamento e recursos para Educação Infantil e Educação Básica.', url:location.href }); }catch(e){} }
+  else { alert('Use o botão Compartilhar do navegador.'); }
+}
+function exportar(){
+  const dados = {};
+  try{ for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); dados[k]=localStorage.getItem(k); } }catch(e){}
+  const arquivo = new Blob([JSON.stringify(dados,null,2)], {type:'application/json'});
+  const link = document.createElement('a'); link.href = URL.createObjectURL(arquivo); link.download = 'backup_planejamento.json'; link.click();
+}
+function importar(event){
+  const arquivo = event.target.files[0]; if(!arquivo) return;
+  const leitor = new FileReader();
+  leitor.onload = function(){
+    try{
+      const dados = JSON.parse(leitor.result);
+      Object.keys(dados).forEach(chave=>{ try{ localStorage.setItem(chave, dados[chave]); }catch(e){} });
+      alert('📥 Backup importado com sucesso.'); location.reload();
+    }catch(e){ alert('❌ Arquivo inválido.'); }
+  };
+  leitor.readAsText(arquivo);
+}
+
+/* ================= inicialização ================= */
+function renderTudo(){ renderPlanoList(); renderResumo(); renderTurmaTabs(); renderCalendario(); renderComunicados(); }
+carregarTudo();
+aplicarConfigNaUI();
+aplicarPerfilNaUI();
+renderTudo();
+renderGrids();
+renderIdiomasChips();
+renderBiblioteca();
+mostrarIdioma('ingles');
+document.getElementById('fab').style.display = 'none';
+</script>
+
+</body>
+</html>
