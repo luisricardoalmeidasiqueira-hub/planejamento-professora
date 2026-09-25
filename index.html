@@ -128,10 +128,7 @@ h2.section-title .link{font-size:12px;color:var(--accent);font-weight:normal}
 
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:var(--card);width:100%;border-radius:20px 20px 0 0;padding:0 18px 18px;max-height:88vh;overflow-y:auto}
-.modal-head{position:sticky;top:0;z-index:2;background:var(--card);display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 -18px 12px;padding:14px 18px;border-bottom:1px solid var(--border)}
-.modal-head h3{margin:0}
-.modal-x{border:0;background:var(--bg);color:var(--text);width:34px;height:34px;border-radius:50%;font-size:16px;flex:none}
+.modal{background:var(--card);width:100%;border-radius:20px 20px 0 0;padding:18px;max-height:88vh;overflow-y:auto}
 @media (min-width:640px){
   .modal-overlay{align-items:center}
   .modal{width:480px;max-width:90vw;border-radius:20px;max-height:85vh}
@@ -247,10 +244,7 @@ document.addEventListener('DOMContentLoaded', function(){
       <h1>📚 Planejamento</h1>
       <p>Área da professora</p>
     </div>
-    <div style="display:flex;gap:8px">
-      <button class="icon-btn" onclick="atualizarAplicativo()" title="Atualizar aplicativo">🔄</button>
-      <button class="icon-btn" onclick="abrirModalConfig()">⚙️</button>
-    </div>
+    <button class="icon-btn" onclick="abrirModalConfig()">⚙️</button>
   </div>
 </header>
 
@@ -457,20 +451,22 @@ document.addEventListener('DOMContentLoaded', function(){
     </div>
 
     <div class="card">
+      <h2 class="section-title">🔄 Atualizar aplicativo</h2>
+      <p style="font-size:12px;color:var(--muted);margin-top:-6px">Use depois que uma nova versão do app for publicada, pra garantir que o celular carregue a mais recente (sem depender de cache antigo).</p>
+      <button type="button" onclick="atualizarAplicativo()" style="width:100%;border:0;border-radius:12px;padding:13px;background:var(--accent-soft);color:var(--accent);font-weight:bold">🔄 Atualizar aplicativo</button>
+    </div>
+
+    <div class="card">
       <h2 class="section-title">💾 Salvar e organizar</h2>
       <div class="data-actions">
         <button class="data-action save" onclick="salvarTudo()">💾 Salvar</button>
         <button class="data-action delete" onclick="excluirDados()">🗑️ Excluir</button>
+        <button class="data-action share" onclick="compartilhar()">📤 Compartilhar</button>
         <button class="data-action export" onclick="exportar()">📦 Exportar</button>
         <button class="data-action import" onclick="document.getElementById('arquivo').click()">📥 Importar</button>
       </div>
       <input id="arquivo" type="file" accept=".json" hidden onchange="importar(event)">
       <p style="color:var(--muted);font-size:12px;margin-top:10px">Os dados ficam salvos neste aparelho.</p>
-    </div>
-
-    <div style="text-align:center;font-size:11px;color:var(--muted);padding:14px 10px 6px;line-height:1.7">
-      Desenvolvido por Luís Ricardo de Almeida Siqueira<br>
-      © 2026 Luís Ricardo de Almeida Siqueira — Todos os direitos reservados.
     </div>
   </section>
 
@@ -784,11 +780,6 @@ const BANCO_PROVAS = {
     { pergunta:'Quantas sílabas tem a palavra "computador"?', alternativas:['3','4','5','6'], correta:1 },
     { pergunta:'Qual das opções é um substantivo próprio?', alternativas:['cidade','Brasil','rio','montanha'], correta:1 },
     { pergunta:'A frase "Ela correu rapidamente" contém um(a):', alternativas:['Substantivo','Adjetivo','Advérbio','Pronome'], correta:2 },
-    { pergunta:'Qual palavra está escrita corretamente?', alternativas:['Excessão','Exceção','Exeção','Esseção'], correta:1 },
-    { pergunta:'Na frase "Os meninos jogaram bola", o sujeito é:', alternativas:['bola','jogaram','Os meninos','jogaram bola'], correta:2 },
-    { pergunta:'Qual é o sinônimo de "bonito"?', alternativas:['Feio','Belo','Triste','Pequeno'], correta:1 },
-    { pergunta:'Qual destas palavras é oxítona?', alternativas:['Café','Mesa','Lâmpada','Casa'], correta:0 },
-    { pergunta:'Qual é o plural de "pão"?', alternativas:['Pãos','Pães','Pões','Pãoes'], correta:1 },
   ],
   'Matemática': [
     { pergunta:'Quanto é 7 × 8?', alternativas:['54','56','58','64'], correta:1 },
@@ -796,11 +787,6 @@ const BANCO_PROVAS = {
     { pergunta:'Quanto é 15 + 27?', alternativas:['42','32','40','52'], correta:0 },
     { pergunta:'Qual fração representa metade de um inteiro?', alternativas:['1/4','1/2','2/3','3/4'], correta:1 },
     { pergunta:'Quanto é 9 ao quadrado (9²)?', alternativas:['18','81','72','99'], correta:1 },
-    { pergunta:'Quanto é 12 × 12?', alternativas:['124','144','132','154'], correta:1 },
-    { pergunta:'Qual é o dobro de 35?', alternativas:['60','65','70','75'], correta:2 },
-    { pergunta:'Quanto é 25% de 200?', alternativas:['25','40','50','75'], correta:2 },
-    { pergunta:'Quantos lados tem um hexágono?', alternativas:['5','6','7','8'], correta:1 },
-    { pergunta:'Qual é o perímetro de um quadrado de lado 5 cm?', alternativas:['10 cm','15 cm','20 cm','25 cm'], correta:2 },
   ],
   'Ciências': [
     { pergunta:'Qual gás as plantas liberam durante a fotossíntese?', alternativas:['Gás carbônico','Oxigênio','Nitrogênio','Hidrogênio'], correta:1 },
@@ -808,11 +794,6 @@ const BANCO_PROVAS = {
     { pergunta:'Qual destes é um estado físico da água?', alternativas:['Sólido','Gasoso','Líquido','Todas as anteriores'], correta:3 },
     { pergunta:'Qual órgão bombeia o sangue no corpo?', alternativas:['Pulmão','Coração','Fígado','Rim'], correta:1 },
     { pergunta:'Animais que se alimentam só de plantas são chamados de:', alternativas:['Carnívoros','Herbívoros','Onívoros','Insetívoros'], correta:1 },
-    { pergunta:'Qual planeta é conhecido como planeta vermelho?', alternativas:['Vênus','Marte','Júpiter','Saturno'], correta:1 },
-    { pergunta:'Qual é o maior órgão do corpo humano?', alternativas:['Coração','Fígado','Pele','Cérebro'], correta:2 },
-    { pergunta:'Ao nível do mar, a água ferve a:', alternativas:['50 °C','90 °C','100 °C','120 °C'], correta:2 },
-    { pergunta:'Qual parte da planta absorve a água do solo?', alternativas:['Folha','Flor','Raiz','Fruto'], correta:2 },
-    { pergunta:'Qual é a estrela mais próxima da Terra?', alternativas:['Lua','Sol','Sirius','Estrela Polar'], correta:1 },
   ],
   'História': [
     { pergunta:'Em que ano o Brasil foi encontrado pelos portugueses?', alternativas:['1500','1600','1822','1889'], correta:0 },
@@ -820,11 +801,6 @@ const BANCO_PROVAS = {
     { pergunta:'Em que ano foi proclamada a República no Brasil?', alternativas:['1822','1889','1500','1930'], correta:1 },
     { pergunta:'Qual civilização construiu as pirâmides do Egito?', alternativas:['Romanos','Gregos','Egípcios','Maias'], correta:2 },
     { pergunta:'Quem foi Tiradentes?', alternativas:['Um rei português','Líder da Inconfidência Mineira','Um explorador','Um imperador'], correta:1 },
-    { pergunta:'Qual lei aboliu a escravidão no Brasil em 1888?', alternativas:['Lei do Ventre Livre','Lei Áurea','Lei dos Sexagenários','Lei Eusébio de Queirós'], correta:1 },
-    { pergunta:'Quem comandava a esquadra portuguesa que chegou ao Brasil em 1500?', alternativas:['Vasco da Gama','Pedro Álvares Cabral','Cristóvão Colombo','Fernão de Magalhães'], correta:1 },
-    { pergunta:'Qual foi a primeira capital do Brasil?', alternativas:['Rio de Janeiro','Brasília','Salvador','São Paulo'], correta:2 },
-    { pergunta:'Em que ano terminou a Segunda Guerra Mundial?', alternativas:['1918','1939','1945','1964'], correta:2 },
-    { pergunta:'Qual civilização antiga criou os Jogos Olímpicos?', alternativas:['Romana','Grega','Egípcia','Persa'], correta:1 },
   ],
   'Geografia': [
     { pergunta:'Qual é a capital do Brasil?', alternativas:['Rio de Janeiro','São Paulo','Brasília','Salvador'], correta:2 },
@@ -832,11 +808,6 @@ const BANCO_PROVAS = {
     { pergunta:'Em qual continente fica o Brasil?', alternativas:['África','América do Sul','Ásia','Europa'], correta:1 },
     { pergunta:'Qual é o maior rio do mundo em volume de água?', alternativas:['Nilo','Amazonas','Mississippi','Danúbio'], correta:1 },
     { pergunta:'Qual é o ponto mais alto do Brasil?', alternativas:['Pico da Neblina','Pico da Bandeira','Monte Roraima','Serra do Mar'], correta:0 },
-    { pergunta:'Quantas regiões tem o Brasil, segundo o IBGE?', alternativas:['4','5','6','7'], correta:1 },
-    { pergunta:'Qual é o maior estado brasileiro em área?', alternativas:['Pará','Mato Grosso','Amazonas','Minas Gerais'], correta:2 },
-    { pergunta:'Qual é o maior país do mundo em área?', alternativas:['China','Canadá','Estados Unidos','Rússia'], correta:3 },
-    { pergunta:'A linha imaginária que divide a Terra em hemisférios Norte e Sul é a:', alternativas:['Meridiano de Greenwich','Linha do Equador','Trópico de Capricórnio','Círculo Polar Ártico'], correta:1 },
-    { pergunta:'Qual bioma ocupa a maior área do Brasil?', alternativas:['Cerrado','Caatinga','Amazônia','Pampa'], correta:2 },
   ],
   'Arte': [
     { pergunta:'Quem pintou a obra "Abaporu"?', alternativas:['Pablo Picasso','Tarsila do Amaral','Cândido Portinari','Leonardo da Vinci'], correta:1 },
@@ -844,11 +815,6 @@ const BANCO_PROVAS = {
     { pergunta:'O que é escultura?', alternativas:['Uma pintura em tela','Uma obra de arte em três dimensões','Um tipo de música','Um poema'], correta:1 },
     { pergunta:'Quais são as cores primárias?', alternativas:['Verde, laranja e roxo','Azul, vermelho e amarelo','Preto, branco e cinza','Rosa, azul e verde'], correta:1 },
     { pergunta:'Qual movimento teve a Semana de Arte Moderna de 1922 como marco no Brasil?', alternativas:['Barroco','Modernismo','Impressionismo','Renascimento'], correta:1 },
-    { pergunta:'Quem pintou a "Mona Lisa"?', alternativas:['Michelangelo','Leonardo da Vinci','Van Gogh','Rafael'], correta:1 },
-    { pergunta:'Qual cor resulta da mistura de vermelho com amarelo?', alternativas:['Verde','Roxo','Laranja','Marrom'], correta:2 },
-    { pergunta:'Quem pintou "Os Retirantes"?', alternativas:['Tarsila do Amaral','Cândido Portinari','Anita Malfatti','Di Cavalcanti'], correta:1 },
-    { pergunta:'Qual destes é um instrumento de percussão?', alternativas:['Violino','Flauta','Tambor','Trompete'], correta:2 },
-    { pergunta:'Quem pintou "A Noite Estrelada"?', alternativas:['Monet','Van Gogh','Picasso','Salvador Dalí'], correta:1 },
   ],
   'Educação Física': [
     { pergunta:'Quantos jogadores tem um time de futebol em campo?', alternativas:['9','10','11','12'], correta:2 },
@@ -856,11 +822,6 @@ const BANCO_PROVAS = {
     { pergunta:'Em que esporte se usa raquete e peteca?', alternativas:['Tênis','Badminton','Vôlei','Squash'], correta:1 },
     { pergunta:'Quantos tempos tem uma partida oficial de basquete?', alternativas:['2','3','4','5'], correta:2 },
     { pergunta:'Qual capacidade física é trabalhada ao correr uma longa distância?', alternativas:['Força','Resistência','Flexibilidade','Velocidade'], correta:1 },
-    { pergunta:'Quantos jogadores de cada time ficam em quadra no vôlei?', alternativas:['5','6','7','8'], correta:1 },
-    { pergunta:'Quantos jogadores de cada time ficam em quadra no basquete?', alternativas:['4','5','6','7'], correta:1 },
-    { pergunta:'De quantos em quantos anos acontecem os Jogos Olímpicos de Verão?', alternativas:['2','3','4','5'], correta:2 },
-    { pergunta:'Qual destes esportes é praticado dentro de uma piscina?', alternativas:['Handebol','Polo aquático','Rúgbi','Beisebol'], correta:1 },
-    { pergunta:'Por que é importante beber água durante a atividade física?', alternativas:['Não tem importância','Para repor o líquido perdido no suor','Para aumentar o cansaço','Para diminuir a força'], correta:1 },
   ],
   'Inglês': [
     { pergunta:'Qual é a tradução de "book"?', alternativas:['Caderno','Livro','Mesa','Caneta'], correta:1 },
@@ -868,11 +829,6 @@ const BANCO_PROVAS = {
     { pergunta:'Qual é o plural de "child"?', alternativas:['Childs','Children','Childes',"Child's"], correta:1 },
     { pergunta:'Complete: "I ___ a student."', alternativas:['is','am','are','be'], correta:1 },
     { pergunta:'Qual é o oposto de "big"?', alternativas:['Small','Tall','Long','Wide'], correta:0 },
-    { pergunta:'Como se diz "cachorro" em inglês?', alternativas:['Cat','Dog','Bird','Fish'], correta:1 },
-    { pergunta:'Qual é a tradução de "Monday"?', alternativas:['Domingo','Segunda-feira','Sábado','Sexta-feira'], correta:1 },
-    { pergunta:'Complete: "She ___ my sister."', alternativas:['am','are','is','be'], correta:2 },
-    { pergunta:'Qual é a tradução de "house"?', alternativas:['Carro','Escola','Casa','Rua'], correta:2 },
-    { pergunta:'Como se escreve o número 12 em inglês?', alternativas:['Twenty','Twelve','Eleven','Two'], correta:1 },
   ],
   'Ensino Religioso': [
     { pergunta:'O que estuda o Ensino Religioso na escola pública brasileira?', alternativas:['Apenas uma religião específica','Diversidade religiosa e cultural, de forma não confessional','Apenas ateísmo','Apenas história da Igreja Católica'], correta:1 },
@@ -880,11 +836,6 @@ const BANCO_PROVAS = {
     { pergunta:'Qual valor é comum à maioria das tradições religiosas e filosóficas?', alternativas:['Egoísmo','Respeito ao próximo','Indiferença','Competição'], correta:1 },
     { pergunta:'Uma característica do Brasil em relação à religião é:', alternativas:['Ter uma religião oficial','Ser um país laico com diversidade religiosa','Proibir práticas religiosas','Ter religião obrigatória'], correta:1 },
     { pergunta:'O que caracteriza um símbolo religioso?', alternativas:['Um objeto sem significado','Uma representação carregada de significado para uma fé ou tradição','Apenas um enfeite','Um item de decoração comum'], correta:1 },
-    { pergunta:'O que é diversidade religiosa?', alternativas:['Existir uma só religião','Várias crenças e tradições convivendo','Proibição de crenças','Obrigação de seguir uma fé'], correta:1 },
-    { pergunta:'Qual atitude demonstra respeito às diferentes crenças?', alternativas:['Zombar da crença do colega','Ouvir e respeitar o outro','Obrigar o colega a mudar de crença','Excluir quem pensa diferente'], correta:1 },
-    { pergunta:'O que é um lugar sagrado?', alternativas:['Um lugar qualquer','Um espaço considerado especial por uma tradição religiosa','Uma loja','Uma quadra de esportes'], correta:1 },
-    { pergunta:'O que são textos sagrados?', alternativas:['Livros de receitas','Escritos considerados importantes por uma tradição religiosa','Jornais do dia','Revistas em quadrinhos'], correta:1 },
-    { pergunta:'No Brasil, a liberdade de crença é garantida pela:', alternativas:['Constituição Federal','Lei de trânsito','CLT','Nenhuma lei'], correta:0 },
   ],
   'Biologia': [
     { pergunta:'Qual é a unidade básica da vida?', alternativas:['Átomo','Célula','Tecido','Órgão'], correta:1 },
@@ -892,11 +843,6 @@ const BANCO_PROVAS = {
     { pergunta:'Qual molécula carrega a informação genética?', alternativas:['Proteína','DNA','Lipídio','Glicose'], correta:1 },
     { pergunta:'A fotossíntese ocorre em qual organela da célula vegetal?', alternativas:['Mitocôndria','Cloroplasto','Núcleo','Ribossomo'], correta:1 },
     { pergunta:'Qual reino inclui os fungos?', alternativas:['Plantae','Animalia','Fungi','Monera'], correta:2 },
-    { pergunta:'Qual organela é responsável pela respiração celular?', alternativas:['Cloroplasto','Mitocôndria','Lisossomo','Complexo de Golgi'], correta:1 },
-    { pergunta:'Quem propôs a teoria da evolução por seleção natural?', alternativas:['Mendel','Darwin','Lamarck','Pasteur'], correta:1 },
-    { pergunta:'No sistema ABO, qual tipo sanguíneo é considerado doador universal?', alternativas:['A','B','AB','O'], correta:3 },
-    { pergunta:'Seres que produzem o próprio alimento são chamados de:', alternativas:['Heterótrofos','Autótrofos','Decompositores','Parasitas'], correta:1 },
-    { pergunta:'Qual cientista é considerado o pai da Genética?', alternativas:['Darwin','Mendel','Watson','Lineu'], correta:1 },
   ],
   'Física': [
     { pergunta:'Qual é a unidade de medida de força no Sistema Internacional?', alternativas:['Joule','Newton','Watt','Pascal'], correta:1 },
@@ -904,11 +850,6 @@ const BANCO_PROVAS = {
     { pergunta:'Qual lei afirma que "a força é igual à massa vezes a aceleração"?', alternativas:['Lei da Gravitação','2ª Lei de Newton','Lei de Ohm','Lei de Hooke'], correta:1 },
     { pergunta:'O que um termômetro mede?', alternativas:['Pressão','Temperatura','Velocidade','Massa'], correta:1 },
     { pergunta:'Qual é a unidade de energia no Sistema Internacional?', alternativas:['Newton','Watt','Joule','Ampère'], correta:2 },
-    { pergunta:'Qual é a unidade de potência no Sistema Internacional?', alternativas:['Joule','Watt','Volt','Newton'], correta:1 },
-    { pergunta:'A 1ª Lei de Newton também é conhecida como:', alternativas:['Lei da Ação e Reação','Princípio da Inércia','Lei da Gravitação','Lei de Ohm'], correta:1 },
-    { pergunta:'Qual é a fórmula da velocidade média?', alternativas:['v = d × t','v = Δs / Δt','v = m × a','v = F / m'], correta:1 },
-    { pergunta:'A Lei de Ohm relaciona:', alternativas:['Força, massa e aceleração','Tensão, corrente e resistência','Pressão e volume','Energia e tempo'], correta:1 },
-    { pergunta:'O som NÃO se propaga no:', alternativas:['Ar','Água','Vácuo','Metal'], correta:2 },
   ],
   'Química': [
     { pergunta:'Qual é o símbolo químico do ouro?', alternativas:['Ag','Au','Fe','O'], correta:1 },
@@ -916,11 +857,6 @@ const BANCO_PROVAS = {
     { pergunta:'O que é um átomo?', alternativas:['A menor partícula de um elemento químico','Uma mistura de substâncias','Um tipo de energia','Uma reação química'], correta:0 },
     { pergunta:'Qual é o pH aproximado de uma substância neutra?', alternativas:['0','7','14','10'], correta:1 },
     { pergunta:'Qual estado físico tem forma e volume definidos?', alternativas:['Sólido','Líquido','Gasoso','Plasma'], correta:0 },
-    { pergunta:'Qual é o símbolo químico do sódio?', alternativas:['S','So','Na','Sd'], correta:2 },
-    { pergunta:'Quem organizou a tabela periódica que deu origem à atual?', alternativas:['Dalton','Mendeleiev','Lavoisier','Bohr'], correta:1 },
-    { pergunta:'Qual partícula do átomo tem carga negativa?', alternativas:['Próton','Nêutron','Elétron','Núcleo'], correta:2 },
-    { pergunta:'Uma substância com pH 3 é:', alternativas:['Básica','Neutra','Ácida','Salina'], correta:2 },
-    { pergunta:'A passagem do estado sólido para o líquido chama-se:', alternativas:['Vaporização','Fusão','Solidificação','Condensação'], correta:1 },
   ],
   'Sociologia': [
     { pergunta:'Quem é considerado um dos fundadores da Sociologia?', alternativas:['Émile Durkheim','Isaac Newton','Charles Darwin','Sigmund Freud'], correta:0 },
@@ -928,11 +864,6 @@ const BANCO_PROVAS = {
     { pergunta:'O que é "cultura" para a Sociologia?', alternativas:['Apenas artes eruditas','Conjunto de valores, costumes e práticas de um grupo','Só festas populares','Apenas religião'], correta:1 },
     { pergunta:'O que caracteriza uma classe social?', alternativas:['Cor dos olhos','Posição econômica e social','Altura','Time de futebol favorito'], correta:1 },
     { pergunta:'O que é preconceito?', alternativas:['Uma opinião formada com base em fatos','Um julgamento prévio sem base em conhecimento real','Um tipo de lei','Uma tradição cultural'], correta:1 },
-    { pergunta:'Quem escreveu "O Capital"?', alternativas:['Max Weber','Karl Marx','Émile Durkheim','Auguste Comte'], correta:1 },
-    { pergunta:'Quem criou o termo "Sociologia"?', alternativas:['Auguste Comte','Karl Marx','Max Weber','Platão'], correta:0 },
-    { pergunta:'O que é mobilidade social?', alternativas:['Mudar de cidade','Mudar de posição na estrutura social','Usar transporte público','Viajar para o exterior'], correta:1 },
-    { pergunta:'O processo em que a pessoa aprende as normas e valores da sociedade chama-se:', alternativas:['Socialização','Urbanização','Industrialização','Globalização'], correta:0 },
-    { pergunta:'Etnocentrismo é:', alternativas:['Respeitar todas as culturas igualmente','Julgar outras culturas a partir da própria','Estudar os astros','Morar no centro da cidade'], correta:1 },
   ],
   'Filosofia': [
     { pergunta:'Quem é considerado o "pai da Filosofia ocidental"?', alternativas:['Sócrates','Tales de Mileto','Aristóteles','Platão'], correta:1 },
@@ -940,11 +871,6 @@ const BANCO_PROVAS = {
     { pergunta:'O que é Ética?', alternativas:['O estudo das leis físicas','O estudo da moral e dos valores','O estudo dos números','O estudo das plantas'], correta:1 },
     { pergunta:'Quem escreveu "A República"?', alternativas:['Aristóteles','Sócrates','Platão','Descartes'], correta:2 },
     { pergunta:'"Penso, logo existo" é uma frase de qual filósofo?', alternativas:['Immanuel Kant','René Descartes','Karl Marx','Friedrich Nietzsche'], correta:1 },
-    { pergunta:'Quem foi professor de Alexandre, o Grande?', alternativas:['Platão','Aristóteles','Sócrates','Pitágoras'], correta:1 },
-    { pergunta:'O "Mito da Caverna" foi escrito por:', alternativas:['Aristóteles','Platão','Kant','Descartes'], correta:1 },
-    { pergunta:'A frase "Só sei que nada sei" é atribuída a:', alternativas:['Sócrates','Platão','Nietzsche','Sartre'], correta:0 },
-    { pergunta:'A área da Filosofia que estuda o conhecimento é a:', alternativas:['Estética','Epistemologia','Ética','Política'], correta:1 },
-    { pergunta:'Quem escreveu "Crítica da Razão Pura"?', alternativas:['Immanuel Kant','Hegel','Rousseau','Hobbes'], correta:0 },
   ],
 };
 
@@ -958,12 +884,7 @@ const SITES_COMPONENTE = {
   'Arte':'https://www.todamateria.com.br/artes/',
   'Educação Física':'https://www.todamateria.com.br/educacao-fisica/',
   'Inglês':'https://www.todamateria.com.br/ingles/',
-  'Ensino Religioso': null,
-  'Biologia':'https://www.todamateria.com.br/biologia/',
-  'Física':'https://www.todamateria.com.br/fisica/',
-  'Química':'https://www.todamateria.com.br/quimica/',
-  'Sociologia':'https://www.todamateria.com.br/sociologia/',
-  'Filosofia':'https://www.todamateria.com.br/filosofia/'
+  'Ensino Religioso': null
 };
 const SUGESTOES_INFANTIL = {
   'O eu, o outro e o nós': [
@@ -990,82 +911,39 @@ const SUGESTOES_INFANTIL = {
 const SUGESTOES_COMPONENTE = {
   'Língua Portuguesa': [
     { tema:'Interpretação de texto', objetivo:'Desenvolver a compreensão leitora', recursos:'Texto impresso, questionário' },
-    { tema:'Produção de pequeno texto', objetivo:'Estimular a escrita e a criatividade', recursos:'Papel, lápis' },
-    { tema:'Gêneros textuais', objetivo:'Reconhecer características de bilhete, carta, notícia e receita', recursos:'Exemplos impressos de cada gênero' },
-    { tema:'Ortografia em jogo', objetivo:'Fixar a escrita correta de palavras com dificuldade (ç, ss, x, ch)', recursos:'Cartões, quadro' },
+    { tema:'Produção de pequeno texto', objetivo:'Estimular a escrita e a criatividade', recursos:'Papel, lápis' }
   ],
   'Matemática': [
     { tema:'Operações básicas', objetivo:'Praticar adição e subtração', recursos:'Quadro, exercícios impressos' },
-    { tema:'Frações com material concreto', objetivo:'Compreender o conceito de fração', recursos:'Círculos de EVA divididos' },
-    { tema:'Situações-problema do dia a dia', objetivo:'Aplicar as operações em contextos reais (compras, troco)', recursos:'Encartes de mercado, dinheirinho de papel' },
-    { tema:'Tabelas e gráficos', objetivo:'Ler e construir gráficos de barras simples', recursos:'Papel quadriculado, lápis de cor' },
+    { tema:'Frações com material concreto', objetivo:'Compreender o conceito de fração', recursos:'Círculos de EVA divididos' }
   ],
   'Ciências': [
     { tema:'Ciclo da água', objetivo:'Compreender o ciclo da água na natureza', recursos:'Cartaz ilustrativo, vídeo' },
-    { tema:'Partes da planta', objetivo:'Identificar raiz, caule, folha, flor e fruto', recursos:'Planta real ou imagens' },
-    { tema:'Cadeia alimentar', objetivo:'Entender a relação entre produtores, consumidores e decompositores', recursos:'Cartaz, figuras de animais e plantas' },
-    { tema:'Sistema solar', objetivo:'Conhecer os planetas e suas características', recursos:'Maquete com bolinhas de isopor' },
+    { tema:'Partes da planta', objetivo:'Identificar raiz, caule, folha, flor e fruto', recursos:'Planta real ou imagens' }
   ],
   'História': [
     { tema:'Linha do tempo da família', objetivo:'Compreender noções de passado e presente', recursos:'Fotos, cartolina' },
-    { tema:'Povos indígenas do Brasil', objetivo:'Conhecer a cultura indígena brasileira', recursos:'Imagens, textos informativos' },
-    { tema:'Brasil Colônia', objetivo:'Compreender a chegada dos portugueses e a exploração do pau-brasil', recursos:'Mapa, textos e imagens da época' },
-    { tema:'Abolição da escravatura', objetivo:'Refletir sobre a escravidão e seus reflexos atuais', recursos:'Linha do tempo, textos, vídeo' },
+    { tema:'Povos indígenas do Brasil', objetivo:'Conhecer a cultura indígena brasileira', recursos:'Imagens, textos informativos' }
   ],
   'Geografia': [
     { tema:'Pontos cardeais', objetivo:'Reconhecer e usar os pontos cardeais', recursos:'Bússola, mapa' },
-    { tema:'Paisagens naturais e urbanas', objetivo:'Diferenciar paisagens naturais de urbanas', recursos:'Imagens variadas' },
-    { tema:'Regiões do Brasil', objetivo:'Identificar as 5 regiões e seus estados', recursos:'Mapa do Brasil para colorir' },
-    { tema:'Biomas brasileiros', objetivo:'Conhecer Amazônia, Cerrado, Caatinga, Mata Atlântica, Pantanal e Pampa', recursos:'Imagens, mapa dos biomas' },
+    { tema:'Paisagens naturais e urbanas', objetivo:'Diferenciar paisagens naturais de urbanas', recursos:'Imagens variadas' }
   ],
   'Arte': [
     { tema:'Mistura de cores', objetivo:'Explorar cores primárias e secundárias', recursos:'Tinta guache, paleta' },
-    { tema:'Arte com sucata', objetivo:'Estimular a criatividade com materiais recicláveis', recursos:'Caixas, potes, cola' },
-    { tema:'Releitura de obra', objetivo:'Conhecer um artista brasileiro e criar sua própria versão da obra', recursos:'Imagem da obra, tinta, papel' },
-    { tema:'Ritmos com o corpo', objetivo:'Explorar sons e ritmos usando palmas e batidas', recursos:'Espaço livre, músicas' },
+    { tema:'Arte com sucata', objetivo:'Estimular a criatividade com materiais recicláveis', recursos:'Caixas, potes, cola' }
   ],
   'Educação Física': [
     { tema:'Brincadeiras populares', objetivo:'Resgatar jogos tradicionais e desenvolver coordenação', recursos:'Corda, bola, giz' },
-    { tema:'Circuito de habilidades', objetivo:'Trabalhar agilidade e equilíbrio', recursos:'Cones, bambolês' },
-    { tema:'Iniciação ao vôlei', objetivo:'Aprender toque e manchete de forma lúdica', recursos:'Bola leve, rede ou corda' },
-    { tema:'Alongamento e saúde', objetivo:'Entender a importância de alongar antes e depois do exercício', recursos:'Colchonetes' },
+    { tema:'Circuito de habilidades', objetivo:'Trabalhar agilidade e equilíbrio', recursos:'Cones, bambolês' }
   ],
   'Inglês': [
     { tema:'Vocabulário: cores e números', objetivo:'Introduzir vocabulário básico em inglês', recursos:'Flashcards' },
-    { tema:'Cumprimentos em inglês', objetivo:'Praticar diálogos simples do dia a dia', recursos:'Cartazes com frases' },
-    { tema:'Family members', objetivo:'Aprender vocabulário da família', recursos:'Flashcards, desenho da família' },
-    { tema:'Days of the week', objetivo:'Aprender os dias da semana em inglês', recursos:'Calendário, música' },
+    { tema:'Cumprimentos em inglês', objetivo:'Praticar diálogos simples do dia a dia', recursos:'Cartazes com frases' }
   ],
   'Ensino Religioso': [
-    { tema:'Respeito às diferenças', objetivo:'Refletir sobre diversidade cultural e religiosa', recursos:'Roda de conversa' },
-    { tema:'Festas e tradições pelo mundo', objetivo:'Conhecer celebrações de diferentes culturas', recursos:'Imagens, roda de conversa' },
-    { tema:'Valores de convivência', objetivo:'Refletir sobre respeito, solidariedade e empatia', recursos:'Histórias curtas, dinâmica' },
-  ],
-  'Biologia': [
-    { tema:'Célula animal e vegetal', objetivo:'Diferenciar as estruturas das células animal e vegetal', recursos:'Imagens, modelo com massinha' },
-    { tema:'Genética de Mendel', objetivo:'Entender dominância e recessividade com cruzamentos simples', recursos:'Quadro de Punnett, exercícios' },
-    { tema:'Ecologia', objetivo:'Compreender cadeias e teias alimentares e o equilíbrio ambiental', recursos:'Textos, esquemas no quadro' },
-  ],
-  'Física': [
-    { tema:'Leis de Newton', objetivo:'Relacionar força, massa e aceleração em exemplos do dia a dia', recursos:'Carrinhos, rampa, vídeos' },
-    { tema:'Circuitos elétricos', objetivo:'Montar circuitos simples e entender a Lei de Ohm', recursos:'Pilhas, fios, lâmpadas pequenas' },
-    { tema:'Movimento uniforme', objetivo:'Calcular velocidade média em situações reais', recursos:'Cronômetro, trena' },
-  ],
-  'Química': [
-    { tema:'Tabela periódica', objetivo:'Localizar elementos e entender a organização em grupos e períodos', recursos:'Tabela periódica impressa' },
-    { tema:'Ácidos e bases', objetivo:'Identificar substâncias ácidas e básicas com indicador natural', recursos:'Repolho roxo, copos, vinagre, bicarbonato' },
-    { tema:'Estados físicos da matéria', objetivo:'Entender as mudanças de estado e a temperatura', recursos:'Gelo, água, fonte de calor' },
-  ],
-  'Sociologia': [
-    { tema:'Cultura e diversidade', objetivo:'Discutir cultura, etnocentrismo e relativismo cultural', recursos:'Textos, vídeos, debate' },
-    { tema:'Desigualdade social', objetivo:'Analisar dados sobre desigualdade no Brasil', recursos:'Gráficos do IBGE, reportagens' },
-    { tema:'Trabalho e sociedade', objetivo:'Refletir sobre as mudanças no mundo do trabalho', recursos:'Textos, entrevistas com familiares' },
-  ],
-  'Filosofia': [
-    { tema:'Mito da Caverna', objetivo:'Interpretar a alegoria de Platão e relacionar com o mundo atual', recursos:'Texto adaptado, desenho da caverna' },
-    { tema:'Ética e moral', objetivo:'Diferenciar ética e moral a partir de dilemas do cotidiano', recursos:'Situações-problema, debate' },
-    { tema:'Filósofos pré-socráticos', objetivo:'Conhecer as primeiras explicações racionais sobre a natureza', recursos:'Textos curtos, linha do tempo' },
-  ],
+    { tema:'Respeito às diferenças', objetivo:'Refletir sobre diversidade cultural e religiosa', recursos:'Roda de conversa' }
+  ]
 };
 
 /* ================= estado ================= */
@@ -1850,6 +1728,12 @@ function removerDaBiblioteca(id){
   persistir('biblioteca', biblioteca);
   renderBiblioteca();
 }
+function toolbarImpressao(){
+  return '<div class="toolbar-nao-imprime"><button onclick="window.close()">← Voltar</button><button onclick="window.print()">🖨️ Imprimir</button></div>';
+}
+function estiloToolbarImpressao(){
+  return '.toolbar-nao-imprime{margin-bottom:18px;padding-bottom:12px;border-bottom:2px solid #ddd;display:flex;gap:10px}.toolbar-nao-imprime button{border:0;border-radius:8px;padding:9px 16px;font-size:14px;cursor:pointer;font-weight:bold}.toolbar-nao-imprime button:first-child{border:1px solid #999;background:#fff;color:#111}.toolbar-nao-imprime button:last-child{background:#315de8;color:#fff}@media print{.toolbar-nao-imprime{display:none}}';
+}
 function imprimirConteudo(conteudoId){
   const c = CONTEUDOS[conteudoId]; if(!c) return;
   let corpo = '';
@@ -1861,8 +1745,8 @@ function imprimirConteudo(conteudoId){
     corpo = c.dados.map(item => `<p style="margin:12px 0 2px;font-size:14px"><b>${escapeHtml(item.t)}</b> — ${escapeHtml(item.m)}</p><p style="margin:0 0 0 14px;font-size:13px">${escapeHtml(item.i)}</p>`).join('');
   }
   const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${c.titulo}</title>
-    <style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111} h1{font-size:19px;margin:0 0 14px}</style></head>
-    <body><h1>${c.titulo}</h1>${corpo}</body></html>`;
+    <style>body{font-family:Arial,Helvetica,sans-serif;padding:28px;color:#111} h1{font-size:19px;margin:0 0 14px} ${estiloToolbarImpressao()}</style></head>
+    <body>${toolbarImpressao()}<h1>${c.titulo}</h1>${corpo}</body></html>`;
   const janela = window.open('', '_blank');
   if(!janela){ alert('Permita pop-ups no navegador para imprimir.'); return; }
   janela.document.open(); janela.document.write(html); janela.document.close(); janela.focus();
@@ -2100,8 +1984,10 @@ function imprimirTrabalho(chave){
       h1{font-size:20px;margin:0 0 6px}
       .cabecalho{border-bottom:1px solid #999;padding-bottom:10px;margin-bottom:14px;font-size:13px;line-height:1.9}
       p.instrucao{font-size:15px;margin:10px 0}
+      ${estiloToolbarImpressao()}
     </style></head>
     <body>
+      ${toolbarImpressao()}
       <h1>${t.titulo}</h1>
       <div class="cabecalho">Nome: _______________________________________<br>Turma: ______________&nbsp;&nbsp;&nbsp; Data: ___/___/______</div>
       <p class="instrucao">${escapeHtml(versao.instrucao)}</p>
@@ -2222,8 +2108,9 @@ function imprimirProva(){
         margin-top:30px;text-align:center;font-size:13px;color:#555;
         border-top:1px solid #ccc;padding-top:8px;
       }
+      ${estiloToolbarImpressao()}
     </style></head>
-    <body>${paginas}</body></html>`;
+    <body>${toolbarImpressao()}${paginas}</body></html>`;
   const janela = window.open('', '_blank');
   if(!janela){ alert('Permita pop-ups no navegador para imprimir a prova.'); return; }
   janela.document.open();
@@ -2435,8 +2322,9 @@ function novaJanelaImpressao(tituloPagina, corpoHtml){
       h1{font-size:19px;margin:0 0 10px}
       .grade{display:flex;flex-wrap:wrap;gap:10px}
       .pagina{page-break-after:always}
+      ${estiloToolbarImpressao()}
     </style></head>
-    <body>${corpoHtml}</body></html>`;
+    <body>${toolbarImpressao()}${corpoHtml}</body></html>`;
   const janela = window.open('', '_blank');
   if(!janela){ alert('Permita pop-ups no navegador para imprimir.'); return; }
   janela.document.open();
@@ -2693,21 +2581,6 @@ renderIdiomasChips();
 renderBiblioteca();
 mostrarIdioma('ingles');
 document.getElementById('fab').style.display = 'none';
-/* botão ✕ fixo no topo de todas as janelas + fechar tocando fora */
-document.querySelectorAll('.modal-overlay').forEach(function(ov){
-  const modal = ov.querySelector('.modal');
-  if(!modal) return;
-  const head = document.createElement('div');
-  head.className = 'modal-head';
-  const h3 = modal.querySelector('h3');
-  head.appendChild(h3 || document.createElement('span'));
-  const x = document.createElement('button');
-  x.type = 'button'; x.className = 'modal-x'; x.textContent = '✕';
-  x.onclick = function(){ fecharModal(ov.id); };
-  head.appendChild(x);
-  modal.insertBefore(head, modal.firstChild);
-  ov.addEventListener('click', function(e){ if(e.target === ov) fecharModal(ov.id); });
-});
 </script>
 
 </body>
