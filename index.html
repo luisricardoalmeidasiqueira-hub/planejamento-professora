@@ -123,8 +123,13 @@ h2.section-title .link{font-size:12px;color:var(--accent);font-weight:normal}
 .share{background:var(--accent-soft);color:var(--accent)}
 .export{background:#ede9fe;color:#5b21b6}
 .import{background:var(--yellow);color:var(--yellow-text)}
+.update{background:#dbeafe;color:#1d4ed8}
 :root[data-theme="dark"] .export{background:#2a2140;color:#c9b6ff}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .export{background:#2a2140;color:#c9b6ff}}
+:root[data-theme="dark"] .update{background:#0c2a3a;color:#7dd3fc}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .export{background:#2a2140;color:#c9b6ff}
+  :root:not([data-theme="light"]) .update{background:#0c2a3a;color:#7dd3fc}
+}
 
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:30;align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
@@ -236,7 +241,6 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
-
 
 <header>
   <div class="row">
@@ -451,12 +455,6 @@ document.addEventListener('DOMContentLoaded', function(){
     </div>
 
     <div class="card">
-      <h2 class="section-title">🔄 Atualizar aplicativo</h2>
-      <p style="font-size:12px;color:var(--muted);margin-top:-6px">Use depois que uma nova versão do app for publicada, pra garantir que o celular carregue a mais recente (sem depender de cache antigo).</p>
-      <button type="button" onclick="atualizarAplicativo()" style="width:100%;border:0;border-radius:12px;padding:13px;background:var(--accent-soft);color:var(--accent);font-weight:bold">🔄 Atualizar aplicativo</button>
-    </div>
-
-    <div class="card">
       <h2 class="section-title">💾 Salvar e organizar</h2>
       <div class="data-actions">
         <button class="data-action save" onclick="salvarTudo()">💾 Salvar</button>
@@ -464,9 +462,10 @@ document.addEventListener('DOMContentLoaded', function(){
         <button class="data-action share" onclick="compartilhar()">📤 Compartilhar</button>
         <button class="data-action export" onclick="exportar()">📦 Exportar</button>
         <button class="data-action import" onclick="document.getElementById('arquivo').click()">📥 Importar</button>
+        <button class="data-action update" onclick="atualizarAplicativo()">🔄 Atualizar</button>
       </div>
       <input id="arquivo" type="file" accept=".json" hidden onchange="importar(event)">
-      <p style="color:var(--muted);font-size:12px;margin-top:10px">Os dados ficam salvos neste aparelho.</p>
+      <p style="color:var(--muted);font-size:12px;margin-top:10px">Os dados ficam salvos neste aparelho. Use "Atualizar" depois de uma nova versão publicada, pra garantir que carregue a mais recente.</p>
     </div>
   </section>
 
@@ -581,6 +580,36 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="modal-actions">
       <button class="cancel" onclick="fecharModal('modal-aluno')">Cancelar</button>
       <button class="confirm" onclick="salvarAluno()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: editar crachá -->
+<div class="modal-overlay" id="modal-cracha">
+  <div class="modal">
+    <h3>Editar crachá</h3>
+    <div class="field"><label>Nome no crachá</label><input type="text" id="fc-nome" placeholder="Ex.: João"></div>
+    <div class="field"><label>Segunda linha (opcional)</label><input type="text" id="fc-linha2" placeholder="Ex.: Turma: Pré I A"></div>
+    <div class="field"><label>Ícone</label>
+      <select id="fc-icone">
+        <option value="🪪">🪪 Crachá</option><option value="⭐">⭐ Estrela</option><option value="🐻">🐻 Ursinho</option>
+        <option value="🦋">🦋 Borboleta</option><option value="🚀">🚀 Foguete</option><option value="🌈">🌈 Arco-íris</option>
+        <option value="🐶">🐶 Cachorrinho</option><option value="🌻">🌻 Girassol</option><option value="">Sem ícone</option>
+      </select>
+    </div>
+    <div class="field"><label>Cor da borda</label>
+      <select id="fc-cor">
+        <option value="#333333">Preto</option><option value="#2563eb">Azul</option><option value="#16a34a">Verde</option>
+        <option value="#dc2626">Vermelho</option><option value="#f59e0b">Amarelo</option><option value="#db2777">Rosa</option>
+        <option value="#7c3aed">Roxo</option>
+      </select>
+    </div>
+    <div class="field"><label><input type="checkbox" id="fc-foto"> Mostrar a foto da criança no crachá</label></div>
+    <div id="fc-previa" style="text-align:center;margin:8px 0"></div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="restaurarCracha()">Restaurar</button>
+      <button class="cancel" onclick="fecharModal('modal-cracha')">Cancelar</button>
+      <button class="confirm" onclick="salvarCracha()">Salvar</button>
     </div>
   </div>
 </div>
@@ -1346,6 +1375,7 @@ function renderAlunos(){
         </div>
       </div>
       <div class="btns">
+        <button onclick="abrirModalCracha('${a.id}')">🪪 Crachá</button>
         <button onclick="abrirModalPortfolio('${a.id}')">🗂️ Nota</button>
         <button class="del" onclick="excluirAluno('${a.id}')">🗑️</button>
       </div>
@@ -2333,17 +2363,81 @@ function novaJanelaImpressao(tituloPagina, corpoHtml){
   janela.focus();
   setTimeout(()=>{ try{ janela.print(); }catch(e){} }, 350);
 }
+let crachaAlunoId = null;
+function dadosCracha(a, turmaNome){
+  const c = a.cracha || {};
+  return {
+    nome: (c.nome !== undefined && c.nome !== '') ? c.nome : a.nome,
+    linha2: (c.linha2 !== undefined) ? c.linha2 : (turmaNome ? 'Turma: '+turmaNome : ''),
+    icone: (c.icone !== undefined) ? c.icone : '🪪',
+    cor: c.cor || '#333333',
+    foto: c.foto && a.foto ? a.foto : null
+  };
+}
+function htmlCracha(d){
+  const topo = d.foto
+    ? `<img src="${d.foto}" style="width:70px;height:70px;border-radius:50%;object-fit:cover">`
+    : (d.icone ? `<div style="font-size:28px">${d.icone}</div>` : '');
+  return `
+    <div style="width:220px;border:3px dashed ${escapeHtml(d.cor)};border-radius:16px;padding:16px;text-align:center;display:inline-block">
+      ${topo}
+      <div style="font-size:18px;font-weight:bold;margin-top:8px;min-height:24px">${d.nome ? escapeHtml(d.nome) : '_______________'}</div>
+      <div style="font-size:13px;color:#555;margin-top:6px">${d.linha2 ? escapeHtml(d.linha2) : (d.linha2===undefined ? 'Turma: ___________' : '&nbsp;')}</div>
+    </div>`;
+}
+function lerCrachaDoForm(a){
+  return {
+    nome: document.getElementById('fc-nome').value.trim(),
+    linha2: document.getElementById('fc-linha2').value.trim(),
+    icone: document.getElementById('fc-icone').value,
+    cor: document.getElementById('fc-cor').value,
+    foto: document.getElementById('fc-foto').checked
+  };
+}
+function atualizarPreviaCracha(){
+  const t = turmaAtual(); if(!t) return;
+  const a = t.alunos.find(x=>x.id===crachaAlunoId); if(!a) return;
+  const c = lerCrachaDoForm(a);
+  const d = dadosCracha({nome:a.nome, foto:a.foto, cracha:c}, t.nome);
+  document.getElementById('fc-previa').innerHTML = htmlCracha(d);
+}
+function abrirModalCracha(alunoId){
+  const t = turmaAtual(); if(!t) return;
+  const a = t.alunos.find(x=>x.id===alunoId); if(!a) return;
+  crachaAlunoId = alunoId;
+  const d = dadosCracha(a, t.nome);
+  document.getElementById('fc-nome').value = d.nome;
+  document.getElementById('fc-linha2').value = d.linha2;
+  document.getElementById('fc-icone').value = d.icone;
+  document.getElementById('fc-cor').value = d.cor;
+  document.getElementById('fc-foto').checked = !!(a.cracha && a.cracha.foto);
+  document.getElementById('fc-foto').disabled = !a.foto;
+  ['fc-nome','fc-linha2'].forEach(id=>document.getElementById(id).oninput = atualizarPreviaCracha);
+  ['fc-icone','fc-cor','fc-foto'].forEach(id=>document.getElementById(id).onchange = atualizarPreviaCracha);
+  atualizarPreviaCracha();
+  document.getElementById('modal-cracha').classList.add('open');
+}
+function salvarCracha(){
+  const t = turmaAtual(); if(!t) return;
+  const a = t.alunos.find(x=>x.id===crachaAlunoId); if(!a) return;
+  a.cracha = lerCrachaDoForm(a);
+  persistir('turmas', turmas);
+  fecharModal('modal-cracha');
+}
+function restaurarCracha(){
+  const t = turmaAtual(); if(!t) return;
+  const a = t.alunos.find(x=>x.id===crachaAlunoId); if(!a) return;
+  delete a.cracha;
+  persistir('turmas', turmas);
+  abrirModalCracha(a.id);
+}
 function imprimirCrachas(){
   const t = turmaAtual();
   const temAlunos = t && t.alunos && t.alunos.length;
-  const lista = temAlunos ? t.alunos.map(a=>({nome:a.nome, turma:t.nome})) : Array.from({length:8},()=>({nome:'',turma:''}));
-  const cartoes = lista.map(n => `
-    <div style="width:220px;border:3px dashed #333;border-radius:16px;padding:16px;text-align:center;display:inline-block">
-      <div style="font-size:28px">🪪</div>
-      <div style="font-size:18px;font-weight:bold;margin-top:8px;min-height:24px">${n.nome ? escapeHtml(n.nome) : '_______________'}</div>
-      <div style="font-size:13px;color:#555;margin-top:6px">${n.turma ? 'Turma: '+escapeHtml(n.turma) : 'Turma: ___________'}</div>
-    </div>`).join('');
-  const aviso = temAlunos ? '' : '<p style="font-size:12px;color:#777">Nenhuma turma com alunos cadastrados ainda — modelos em branco para preencher à mão.</p>';
+  const cartoes = temAlunos
+    ? t.alunos.map(a=>htmlCracha(dadosCracha(a, t.nome))).join('')
+    : Array.from({length:8},()=>htmlCracha({nome:'',linha2:undefined,icone:'🪪',cor:'#333333',foto:null})).join('');
+  const aviso = temAlunos ? '<p style="font-size:12px;color:#777">Dica: em Turma, toque em “🪪 Crachá” ao lado de cada aluno para editar o nome, o ícone, a cor e a foto.</p>' : '<p style="font-size:12px;color:#777">Nenhuma turma com alunos cadastrados ainda — modelos em branco para preencher à mão.</p>';
   novaJanelaImpressao('Crachás', `<h1>🪪 Crachás${temAlunos ? ' — '+escapeHtml(t.nome) : ''}</h1>${aviso}<div class="grade">${cartoes}</div>`);
 }
 function imprimirEtiquetas(){
